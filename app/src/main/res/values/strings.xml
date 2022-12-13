@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">IpynbViewer</string>
+    <string name="title">Select Render</string>
 </resources>
