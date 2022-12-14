@@ -30,6 +30,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class WebView extends AppCompatActivity {
 
@@ -39,8 +40,8 @@ public class WebView extends AppCompatActivity {
     public static final int REQUEST_SELECT_FILE = 100;
     private final static int FILECHOOSER_RESULTCODE = 1;
     private Uri uri;
-    public String url ="file:///android_asset/ipynbviewer.html";
-
+    public String render1 ="file:///android_asset/Render1/ipynbviewer.html";
+    public String render2 ="file:///android_asset/Render2/index.html";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +52,23 @@ public class WebView extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        Intent intent = getIntent();
+        String render = intent.getStringExtra("render");
+
         webView = (android.webkit.WebView) findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(false);
-        webView.getSettings().setLoadWithOverviewMode(true);
+        //webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(true);
         webView.setInitialScale(100);
-        webView.loadUrl(url);
+        if(render.equalsIgnoreCase("Render1")){
+            webView.loadUrl(render1);
+        }else if(render.equalsIgnoreCase("Render2")){
+            webView.loadUrl(render2);
+        }
+
 
         webView.setWebViewClient(new xWebViewClient());
         webView.setWebChromeClient(new WebChromeClient()
@@ -97,8 +106,6 @@ public class WebView extends AppCompatActivity {
                         uri = data.getData();
                         uploadMessage.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result.getResultCode(), data));
                         uploadMessage = null;
-                        Log.d("DATA1",uri.getPath());
-                        Log.d("DATA1",uri.getLastPathSegment());
 
                     }else if(result.getResultCode() == Activity.RESULT_CANCELED){
                         uploadMessage.onReceiveValue(null);
@@ -174,6 +181,9 @@ public class WebView extends AppCompatActivity {
         return fileName;
     }
 
+
+
+    //Save code
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater findMenuItems = getMenuInflater();
@@ -186,11 +196,19 @@ public class WebView extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.save:
-                String fname = getFilename(uri);
-                fname = fname.replace(".ipynb","");
-                Log.d("DATA1",fname);
-                createWebPrintJob(webView,WebView.this,fname);
-                return true;
+                if(uri != null){
+                    String fname = getFilename(uri);
+                    if(fname.endsWith(".ipynb")){
+                        fname = fname.replace(".ipynb","");
+                        createWebPrintJob(webView,WebView.this,fname);
+                        return true;
+                    }else{
+                        Toast.makeText(this, "Please select correct ipynb file and save", Toast.LENGTH_SHORT).show();
+                    }
+
+                }else{
+                    Toast.makeText(this, "Nothing to save, please select file", Toast.LENGTH_SHORT).show();
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }

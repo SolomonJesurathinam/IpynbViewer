@@ -10,14 +10,8 @@
     <script src='lib/nbv.js'></script>
 
     <style type='text/css'>
-				h1 {
-							text-align: center;
-							padding-top: 1.5%;
-							font-size: 5em;
-						}
         body {
-            font: 0.8em Arial, sans-serif;
-            background-color: #eee;
+            font: .9em Arial, sans-serif;
         }
 
 				div#instructions {
@@ -25,27 +19,27 @@
             font-size: 2em;
             color: rgb(108, 108, 108);
             text-align: center;
-            padding-top: 10%;
             margin: 0 auto;
         }
         div#instructions small {
-            font-size: .7em;
+            font-size: 1em;
         }
         input#fileUpload {
-            /*display: block;*/
-            font-size: 3.5em;
-            margin: 0 auto;
-            align: center;
+            font-size: 3em;
         }
-
+        div#header {
+						font-size: 4em;
+						padding-top:50px;
+        }
+        div#titlediv {
+            padding-left:20px;
+        }
     </style>
 </head>
 <body>
-<h1 id="header">Ipynb Viewer</h1>
-<div>
-    <center>
-        <input type = file id = "fileUpload">
-    </center>
+<div style="background-color: #EEF" id="titlediv">
+    <div id="header" style="padding-bottom:30px"><b>IPYNB VIEWER</b></div>
+    <input type = file id = "fileUpload" style="padding-bottom: 50px">
 </div>
 
 <div id="file-upload-filename"></div>
@@ -58,7 +52,6 @@
 
 <script>
     var input = document.getElementById( 'fileUpload' );
-    input.style.paddingTop = "100px";
     var error = document.getElementById("error");
     error.style.PaddingTop = "200px";
     var header = document.getElementById( 'header' );
