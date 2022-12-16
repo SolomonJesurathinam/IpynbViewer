@@ -133,15 +133,10 @@ public class WebView extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private int _getScreenOrientation(){
-        return getResources().getConfiguration().orientation;
-    }
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        int nCurrentOrientation = _getScreenOrientation();
-        if (nCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             webView.setInitialScale(100);
             webView.getSettings().setUseWideViewPort(true);
         } else {

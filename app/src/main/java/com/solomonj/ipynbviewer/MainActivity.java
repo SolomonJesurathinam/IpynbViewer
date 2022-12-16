@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     private ImageView infologo;
     private String render;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +52,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),information.class);
-
                 startActivity(intent);
             }
         });

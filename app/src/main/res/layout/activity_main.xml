@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/getStarted"
@@ -17,7 +18,10 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.044" />
+        app:layout_constraintVertical_bias="0.044"
+        android:background="@drawable/mybutton"
+        android:textColor="@color/colorText"
+        app:backgroundTint="@null"/>
 
     <TextView
         android:id="@+id/title"
@@ -25,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
         android:text="IPYNB VIEWER"
-        android:textColor="#000000"
+        android:textColor="@color/colorText"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -74,7 +78,7 @@
         android:layout_height="25dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="28dp"
-        android:alpha="0.3"
+        android:alpha="0.5"
         android:src="@drawable/info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
