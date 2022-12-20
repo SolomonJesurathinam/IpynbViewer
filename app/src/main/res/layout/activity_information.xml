@@ -46,71 +46,78 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
-            android:text="Question1"/>
+            android:text="What is Experimental Feature?"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Answer1"/>
+            android:text="File is uploaded to cloud and Jupyter NbConvert conversion happens at cloud and a pdf download link is displayed."/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
-            android:text="Question2"/>
+            android:text="Uploded files are saved in Cloud?"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Answer2"/>
+            android:text="Nope, We dont save any files in cloud. After the download link is displayed the files are auto deleted."/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
-            android:text="Question2"/>
+            android:text="How files are rendered in mobile?"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Answer2"/>
+            android:text="The ipynb file is rendered in mobile using html,javascript and css"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
-            android:text="Question2"/>
+            android:text="What is Render1 and Render2?"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Answer2"/>
+            android:text="Different logic's are implemented in both renders"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
-            android:text="Question2"/>
+            android:text="How to save as PDF?"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Answer2"/>
+            android:text="Click on the menu (three dots) on the top right side and click 'Save'. After the print preview is loaded we can customise it and click on 'Save as PDF'"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
-            android:text="Question2"/>
+            android:text="Can we edit the ipynb file?"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Answer2"/>
+            android:text="No we can't edit or run the file, its just a viewer."/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
-            android:text="Question2"/>
+            android:text="Where to find the demo of the app?"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Answer2"/>
+            android:text="https:google.com"/>
 
         <TextView
             android:layout_width="match_parent"
