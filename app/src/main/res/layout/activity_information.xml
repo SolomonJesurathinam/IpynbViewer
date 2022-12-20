@@ -47,7 +47,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
             android:text="What is Experimental Feature?"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +59,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
             android:text="Uploded files are saved in Cloud?"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +71,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
             android:text="How files are rendered in mobile?"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,7 +83,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
             android:text="What is Render1 and Render2?"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -91,7 +95,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
             android:text="How to save as PDF?"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -102,7 +107,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
             android:text="Can we edit the ipynb file?"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -113,7 +119,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="6dp"
             android:text="Where to find the demo of the app?"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
