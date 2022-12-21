@@ -28,6 +28,7 @@ public class information extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information);
 
+        //Experimental button
         experimentalbtn = findViewById(R.id.experimentalbtn);
         experimentalbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +48,7 @@ public class information extends AppCompatActivity {
         });
     }
 
+    //Chrome custom tab
     public static void openCustomTab(Activity activity, CustomTabsIntent customTabsIntent, Uri uri) {
         String packageName = "com.android.chrome";
         if (packageName != null) {

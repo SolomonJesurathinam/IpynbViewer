@@ -45,20 +45,19 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="What is Experimental Feature?"
+            android:paddingTop="8dp"
+            android:text="What is Experimental Feature ?"
             android:textStyle="bold"
             android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="File is uploaded to cloud and Jupyter NbConvert conversion happens at cloud and a pdf download link is displayed."/>
-
+            android:text="Conversion are happened in cloud using Jupyter NbConvert function and a pdf link is displayed."/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Uploded files are saved in Cloud?"
+            android:paddingTop="8dp"
+            android:text="Uploded files are saved in Cloud ?"
             android:textStyle="bold"
             android:textColor="@color/colorText"/>
         <TextView
@@ -69,8 +68,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="How files are rendered in mobile?"
+            android:paddingTop="8dp"
+            android:text="How files are rendered in mobile ?"
             android:textStyle="bold"
             android:textColor="@color/colorText"/>
         <TextView
@@ -81,32 +80,56 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="What is Render1 and Render2?"
+            android:paddingTop="8dp"
+            android:text="Do we need internet to render and view ipynb files in mobile ?"
             android:textStyle="bold"
             android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Different logic's are implemented in both renders"/>
+            android:text="For Render1 we need internet to download the css files (cached) for the first time and Render2 doesnt need any internet."/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="How to save as PDF?"
+            android:paddingTop="8dp"
+            android:text="What is Render1 and Render2 ?"
             android:textStyle="bold"
             android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Click on the menu (three dots) on the top right side and click 'Save'. After the print preview is loaded we can customise it and click on 'Save as PDF'"/>
+            android:text=" Different logic's are implemented in both renders"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Can we edit the ipynb file?"
+            android:paddingTop="8dp"
+            android:text="How to save as PDF ?"
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Click on the menu (three dots) on the top right side and click 'Save'. After the print preview is loaded we can customise it and click on 'Save as PDF'."/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="Where are the pdf files saved ?"
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pdf files are saved in the same folder where the ipynb files are loaded. For Experimental feature files are saved in the Downloads folder."/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="Can we edit the ipynb file ?"
             android:textStyle="bold"
             android:textColor="@color/colorText"/>
         <TextView
@@ -117,124 +140,26 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Where to find the demo of the app?"
+            android:paddingTop="8dp"
+            android:text="How to report issues ?"
             android:textStyle="bold"
             android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="https:google.com"/>
+            android:text="Please report any issues in the comments section in store. Please dont report any issues in experimental feature, and that is just an backup option."/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Question2"/>
+            android:paddingTop="8dp"
+            android:text="What are the future plans ?"
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Answer2"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Question2"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Answer2"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Question2"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Answer2"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Question2"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Answer2"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Question2"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Answer2"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Question2"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Answer2"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Question2"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Answer2"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Question2"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Answer2"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Question2"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Answer2"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Question2"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Answer2"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:text="Question2"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Answer2"/>
+            android:text="1. Currently Experimental feature is running in a basic server and if there are enough support it will be moved to main application with fast servers \n2. Open and View ipynb files directly from file manager.\n3. Render and view ipynb files from links (ex: Gist, Github)\n4. Performance and bug fixes."/>
 
     </LinearLayout>
 

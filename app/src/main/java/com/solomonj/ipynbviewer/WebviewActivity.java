@@ -25,20 +25,16 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.Toast;
 
-public class WebView extends AppCompatActivity {
+public class WebviewActivity extends AppCompatActivity {
 
-    android.webkit.WebView webView;
-    private ValueCallback<Uri> mUploadMessage;
+    WebView webView;
     public ValueCallback<Uri[]> uploadMessage;
-    public static final int REQUEST_SELECT_FILE = 100;
-    private final static int FILECHOOSER_RESULTCODE = 1;
     private Uri uri;
     public String render1 ="file:///android_asset/Render1/ipynbviewer.html";
     public String render2 ="file:///android_asset/Render2/index.html";
@@ -55,10 +51,10 @@ public class WebView extends AppCompatActivity {
         Intent intent = getIntent();
         String render = intent.getStringExtra("render");
 
-        webView = (android.webkit.WebView) findViewById(R.id.webView);
+        webView = (WebView) findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(false);
-        //webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setAppCacheEnabled(false);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(true);
@@ -69,12 +65,10 @@ public class WebView extends AppCompatActivity {
             webView.loadUrl(render2);
         }
 
-
+        //File Intent
         webView.setWebViewClient(new xWebViewClient());
         webView.setWebChromeClient(new WebChromeClient()
         {
-
-            // For Lollipop 5.0+ Devices
             public boolean onShowFileChooser(android.webkit.WebView mWebView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams)
             {
                 Intent data;
@@ -90,9 +84,7 @@ public class WebView extends AppCompatActivity {
                 uploadMessage = filePathCallback;
                 return true;
             }
-
         });
-
     }
 
     //File picker
@@ -104,8 +96,12 @@ public class WebView extends AppCompatActivity {
                     if(result.getResultCode() == Activity.RESULT_OK){
                         Intent data = result.getData();
                         uri = data.getData();
-                        uploadMessage.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result.getResultCode(), data));
-                        uploadMessage = null;
+                        try {
+                            uploadMessage.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result.getResultCode(), data));
+                            uploadMessage = null;
+                        }catch (NullPointerException e){
+                            Toast.makeText(WebviewActivity.this, "Please re-select the file, activity restarted due to low memory", Toast.LENGTH_LONG).show();
+                        }
 
                     }else if(result.getResultCode() == Activity.RESULT_CANCELED){
                         uploadMessage.onReceiveValue(null);
@@ -122,6 +118,7 @@ public class WebView extends AppCompatActivity {
         }
     }
 
+    //Back button callback
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -133,6 +130,7 @@ public class WebView extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    //Orientation Change configuration
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -145,20 +143,17 @@ public class WebView extends AppCompatActivity {
         }
     }
 
+    //Print Job method
     public void createWebPrintJob(android.webkit.WebView webView, Context context, String filename) {
-        // Get a PrintManager instance
         PrintManager printManager = (PrintManager) context
                 .getSystemService(Context.PRINT_SERVICE);
-
-        // Get a print adapter instance
         PrintDocumentAdapter printAdapter = webView.createPrintDocumentAdapter(filename);
-
-        // Create a print job with name and adapter instance
-        String jobName = context.getString(R.string.app_name) + " Document";
-        printManager.print(jobName, printAdapter,
+        //String jobName = context.getString(R.string.app_name) + " Document";
+        printManager.print(filename, printAdapter,
                 new PrintAttributes.Builder().build());
     }
 
+    //Filename method
     public String getFilename(Uri uri){
         String fileName = null;
         String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
@@ -173,12 +168,11 @@ public class WebView extends AppCompatActivity {
                 metaCursor.close();
             }
         }
+        Log.d("DATA1",fileName.toString());
         return fileName;
     }
 
-
-
-    //Save code
+    //Menu configuration
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater findMenuItems = getMenuInflater();
@@ -186,6 +180,7 @@ public class WebView extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    //Menu items selected code
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -195,7 +190,7 @@ public class WebView extends AppCompatActivity {
                     String fname = getFilename(uri);
                     if(fname.endsWith(".ipynb")){
                         fname = fname.replace(".ipynb","");
-                        createWebPrintJob(webView,WebView.this,fname);
+                        createWebPrintJob(webView, WebviewActivity.this,fname);
                         return true;
                     }else{
                         Toast.makeText(this, "Please select correct ipynb file and save", Toast.LENGTH_SHORT).show();
