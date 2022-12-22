@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/save"
         android:icon="@color/colorText"
-        android:title="SAVE"/>
+        android:title="SAVE"
+        android:iconTint="#206BED"/>
+
+    <item android:id="@+id/saveCustomise"
+        android:icon="@color/colorText"
+        android:title="SAVE - Customise"
+        android:iconTint="#206BED"/>
 
 </menu>

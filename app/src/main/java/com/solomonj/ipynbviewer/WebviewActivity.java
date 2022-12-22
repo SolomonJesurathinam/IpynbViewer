@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
@@ -30,6 +32,10 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import com.webviewtopdf.PdfView;
+
+import java.io.File;
 
 public class WebviewActivity extends AppCompatActivity {
 
@@ -180,6 +186,8 @@ public class WebviewActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/IpynbViewer/");
+
     //Menu items selected code
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -190,12 +198,42 @@ public class WebviewActivity extends AppCompatActivity {
                     String fname = getFilename(uri);
                     if(fname.endsWith(".ipynb")){
                         fname = fname.replace(".ipynb","");
-                        createWebPrintJob(webView, WebviewActivity.this,fname);
+                        ProgressDialog progressDialog = new ProgressDialog(WebviewActivity.this);
+                        progressDialog.setMessage("Please wait");
+                        progressDialog.show();
+                        String finalFname = fname;
+                        PdfView.createWebPrintJob(WebviewActivity.this, webView, directory, fname+".pdf", new PdfView.Callback() {
+                            @Override
+                            public void success(String s) {
+                                Toast.makeText(WebviewActivity.this, "PDF Downloaded at Downloads/IpynbViewer", Toast.LENGTH_LONG).show();
+                                progressDialog.dismiss();
+                            }
+
+                            @Override
+                            public void failure() {
+                                progressDialog.dismiss();
+                                Toast.makeText(WebviewActivity.this, "Failed to save pdf, trying another method", Toast.LENGTH_SHORT).show();
+                                createWebPrintJob(webView, WebviewActivity.this, finalFname);
+                            }
+                        });
                         return true;
                     }else{
                         Toast.makeText(this, "Please select correct ipynb file and save", Toast.LENGTH_SHORT).show();
                     }
 
+                }else{
+                    Toast.makeText(this, "Nothing to save, please select file", Toast.LENGTH_SHORT).show();
+                }
+            case R.id.saveCustomise:
+                if(uri != null){
+                    String fname = getFilename(uri);
+                    if(fname.endsWith(".ipynb")) {
+                        fname = fname.replace(".ipynb", "");
+                        createWebPrintJob(webView, WebviewActivity.this, fname);
+                        return true;
+                    }else{
+                            Toast.makeText(this, "Please select correct ipynb file and save", Toast.LENGTH_SHORT).show();
+                        }
                 }else{
                     Toast.makeText(this, "Nothing to save, please select file", Toast.LENGTH_SHORT).show();
                 }
