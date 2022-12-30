@@ -4,20 +4,27 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.FileUtils;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
@@ -33,9 +40,15 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.PathUtils;
+import com.google.android.material.snackbar.Snackbar;
 import com.webviewtopdf.PdfView;
-
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class WebviewActivity extends AppCompatActivity {
 
@@ -45,18 +58,27 @@ public class WebviewActivity extends AppCompatActivity {
     public String render1 ="file:///android_asset/Render1/ipynbviewer.html";
     public String render2 ="file:///android_asset/Render2/index.html";
 
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String PermissionDeniedCount = "PermissionDeniedCount";
+    SharedPreferences sharedpreferences;
+    int counter;
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
 
+        //Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        //Get render page intent from Home activity
         Intent intent = getIntent();
         String render = intent.getStringExtra("render");
 
+        //Webview initilization and settings
         webView = (WebView) findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(false);
@@ -71,7 +93,7 @@ public class WebviewActivity extends AppCompatActivity {
             webView.loadUrl(render2);
         }
 
-        //File Intent
+        //File Intent to open file explorer for webview
         webView.setWebViewClient(new xWebViewClient());
         webView.setWebChromeClient(new WebChromeClient()
         {
@@ -85,15 +107,49 @@ public class WebviewActivity extends AppCompatActivity {
                     data = new Intent(Intent.ACTION_GET_CONTENT);
                 }
                 data.setType("*/*");
-                data = Intent.createChooser(data,"Choose a file");
+                data = Intent.createChooser(data,"Select a Ipynb file");
                 sActivityLauncher.launch(data);
                 uploadMessage = filePathCallback;
                 return true;
             }
         });
+
+        //Shared Preferences initilization
+        sharedpreferences = getSharedPreferences(MyPREFERENCES,Context.MODE_PRIVATE);
+        counter = sharedpreferences.getInt("PermissionDeniedCount", 0);
+
+        //Get Write storage permission for saving PDF
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+            if(counter < 2){
+                Toast.makeText(this, "Please grant storage permission to save pdf automatically", Toast.LENGTH_LONG).show();
+            }
+
+        }
+
     }
 
-    //File picker
+
+    //On getting the permission result - Counter increases on denied
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length >0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                    if(counter<8){
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        counter++;
+                        editor.putInt(PermissionDeniedCount,counter);
+                        editor.commit();
+                    }
+                }
+        }
+    }
+
+
+    //File picker for selecting ipynb file
     ActivityResultLauncher<Intent> sActivityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -106,9 +162,9 @@ public class WebviewActivity extends AppCompatActivity {
                             uploadMessage.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result.getResultCode(), data));
                             uploadMessage = null;
                         }catch (NullPointerException e){
+                            //Exception handling due to low memory issues in browser/webview
                             Toast.makeText(WebviewActivity.this, "Please re-select the file, activity restarted due to low memory", Toast.LENGTH_LONG).show();
                         }
-
                     }else if(result.getResultCode() == Activity.RESULT_CANCELED){
                         uploadMessage.onReceiveValue(null);
                     }
@@ -116,15 +172,18 @@ public class WebviewActivity extends AppCompatActivity {
                 }
             });
 
+
+    //URL Overloading, blocks url in Webview
     private class xWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(android.webkit.WebView view, String url) {
-            view.loadUrl(url);
+            //view.loadUrl(url);
             return true;
         }
     }
 
-    //Back button callback
+
+    //Back button callback in webview
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -132,11 +191,11 @@ public class WebviewActivity extends AppCompatActivity {
             webView.goBack();
             return true;
         }
-
         return super.onKeyDown(keyCode, event);
     }
 
-    //Orientation Change configuration
+
+    //Orientation Change configuration to initial scales --> Orientation Save state is handled in Manifest file
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -149,17 +208,18 @@ public class WebviewActivity extends AppCompatActivity {
         }
     }
 
-    //Print Job method
+
+    //Default Print Job method for saving the pdf
     public void createWebPrintJob(android.webkit.WebView webView, Context context, String filename) {
         PrintManager printManager = (PrintManager) context
                 .getSystemService(Context.PRINT_SERVICE);
         PrintDocumentAdapter printAdapter = webView.createPrintDocumentAdapter(filename);
-        //String jobName = context.getString(R.string.app_name) + " Document";
         printManager.print(filename, printAdapter,
                 new PrintAttributes.Builder().build());
     }
 
-    //Filename method
+
+    //Method to retrieve file name of a Uri using MediaStore
     public String getFilename(Uri uri){
         String fileName = null;
         String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
@@ -174,11 +234,11 @@ public class WebviewActivity extends AppCompatActivity {
                 metaCursor.close();
             }
         }
-        Log.d("DATA1",fileName.toString());
         return fileName;
     }
 
-    //Menu configuration
+
+    //Top menu configuration to add values
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater findMenuItems = getMenuInflater();
@@ -186,44 +246,47 @@ public class WebviewActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/IpynbViewer/");
+
+    //File directory based on SDK and third party code
+    public File getDirectory(){
+        File directory;
+        if(Build.VERSION.SDK_INT>= 29){
+            directory = new File(PathUtils.getExternalAppDocumentsPath().concat("/IpynbViewer/"));
+            Log.d("DATA1",directory.toString());
+        }else{
+            directory = new File(PathUtils.getExternalDocumentsPath().concat("/IpynbViewer/"));
+            Log.d("DATA1",directory.toString());
+        }
+        return directory;
+    }
+
 
     //Menu items selected code
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
+
             case R.id.save:
                 if(uri != null){
                     String fname = getFilename(uri);
                     if(fname.endsWith(".ipynb")){
                         fname = fname.replace(".ipynb","");
-                        ProgressDialog progressDialog = new ProgressDialog(WebviewActivity.this);
-                        progressDialog.setMessage("Please wait");
-                        progressDialog.show();
-                        String finalFname = fname;
-                        PdfView.createWebPrintJob(WebviewActivity.this, webView, directory, fname+".pdf", new PdfView.Callback() {
-                            @Override
-                            public void success(String s) {
-                                Toast.makeText(WebviewActivity.this, "PDF Downloaded at Downloads/IpynbViewer", Toast.LENGTH_LONG).show();
-                                progressDialog.dismiss();
-                            }
-
-                            @Override
-                            public void failure() {
-                                progressDialog.dismiss();
-                                Toast.makeText(WebviewActivity.this, "Failed to save pdf, trying another method", Toast.LENGTH_SHORT).show();
-                                createWebPrintJob(webView, WebviewActivity.this, finalFname);
-                            }
-                        });
+                        try{
+                            saveAutomatically(fname);
+                        }catch (Exception e){
+                            progressDialog.dismiss();
+                            Toast.makeText(WebviewActivity.this, "Failed to save pdf, opening default Print method", Toast.LENGTH_LONG).show();
+                            createWebPrintJob(webView, WebviewActivity.this, fname);
+                        }
                         return true;
                     }else{
-                        Toast.makeText(this, "Please select correct ipynb file and save", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Please select correct ipynb file and save", Toast.LENGTH_LONG).show();
                     }
-
                 }else{
-                    Toast.makeText(this, "Nothing to save, please select file", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Nothing to save, please select file", Toast.LENGTH_LONG).show();
                 }
+
             case R.id.saveCustomise:
                 if(uri != null){
                     String fname = getFilename(uri);
@@ -232,13 +295,69 @@ public class WebviewActivity extends AppCompatActivity {
                         createWebPrintJob(webView, WebviewActivity.this, fname);
                         return true;
                     }else{
-                            Toast.makeText(this, "Please select correct ipynb file and save", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Please select correct ipynb file and save", Toast.LENGTH_LONG).show();
                         }
                 }else{
-                    Toast.makeText(this, "Nothing to save, please select file", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Nothing to save, please select file", Toast.LENGTH_LONG).show();
                 }
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    public void saveAutomatically(String fname){
+        progressDialog = new ProgressDialog(WebviewActivity.this);
+        progressDialog.setMessage("Please wait, Downloading File");
+        progressDialog.show();
+        PdfView.createWebPrintJob(WebviewActivity.this, webView, getDirectory(), fname+".pdf", new PdfView.Callback() {
+            @Override
+            public void success(String s) {
+                if(Build.VERSION.SDK_INT>= 29){
+                    File file = new File(getDirectory(), fname+".pdf");
+                    if (file.exists()){
+                        Log.d("DATA1","FILE EXISTS");
+                        ContentResolver resolver = getApplicationContext().getContentResolver();
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fname);
+                        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf");
+                        contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + File.separator + "IpynbViewer");
+
+                        Uri uri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues);
+                        try {
+                            InputStream inputStream = new FileInputStream(file);
+                            OutputStream outputStream = getContentResolver().openOutputStream(uri);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                FileUtils.copy(inputStream,outputStream);
+                                inputStream.close();
+                                outputStream.close();
+                            }
+                        } catch (FileNotFoundException e) {
+                            Toast.makeText(WebviewActivity.this,"Something happened, Please download again",Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            Toast.makeText(WebviewActivity.this,"Something happened, Please download again",Toast.LENGTH_SHORT).show();
+                        }
+                        file.delete();
+                        Toast.makeText(WebviewActivity.this, "PDF Downloaded at Documents/IpynbViewer", Toast.LENGTH_LONG).show();
+                        progressDialog.dismiss();
+                    }else{
+                        progressDialog.dismiss();
+                        Toast.makeText(WebviewActivity.this,"Something happened, Please download again",Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    progressDialog.dismiss();
+                    Toast.makeText(WebviewActivity.this, "PDF Downloaded at Documents/IpynbViewer", Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void failure() {
+                progressDialog.dismiss();
+                Toast.makeText(WebviewActivity.this, "Storage access is denied, opening default Print method", Toast.LENGTH_LONG).show();
+                createWebPrintJob(webView, WebviewActivity.this, fname);
+            }
+        });
+    }
+
+
 }
