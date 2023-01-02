@@ -4,6 +4,7 @@
     var $holder = document.querySelector("#notebook-holder");
     var $controls = document.querySelector("#controls");
     var $error = document.querySelector("#error");
+    var notebook = document.getElementById("main");
 
 
     var render_notebook = function (ipynb) {
@@ -29,11 +30,12 @@
 					load_file(this.files[0]);
 					$controls.hidden=true;
 					$error.textContent="";
+					notebook.style.display = "block";
 				}else{
 					console.log("Invalid file");
 					$error.textContent = "Please upload correct ipynb format file";
 					$error.align = "center";
-					$error.style.fontSize = "1.5em";
+					$error.style.fontSize = "3.5em";
 					$error.style.color = "red";
 						 }
 

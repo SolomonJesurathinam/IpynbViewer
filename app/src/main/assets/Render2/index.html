@@ -22,33 +22,65 @@
             font-size: .6em;
             margin: 0 auto;
         }
+
+        div#fileHead{
+        		padding:5px 10px;
+						background:#00ad2d;
+						border:10px solid #00ad2d;
+						position:relative;
+						color:#fff;
+						border-radius:10px;
+						text-align:center;
+						float:left;
+						cursor:pointer
+
+					}
+				.file {
+						z-index: 1000;
+						opacity: 0;
+						cursor: pointer;
+						right: 0;
+						top: 0;
+						height: 100%;
+						font-size: 24px;
+						width: 100%;
+						position: absolute;
+					}
+
+					div#header {
+						font-size: 2em;
+						color:#1877f2;
+						background:#ffffff;
+        }
+
+        .center-screen {
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					text-align: left;
+					min-height: 100vh;
+						}
+
         </style>
 
 </head>
 <body>
-<div id="main">
-    <div id="controls">
-        <div id="header">IPYNB VIEWER</div>
-        <input type="file" id="file">
+<div id="main" style="background-color:#ffffff" class="center-screen">
+    <div id="controls" style="background-color:#ffffff">
+            <div id="header">IPYNB VIEWER</div>
+            <div id="fileHead" style=>
+                Choose File
+                <input type="file" id="file" class="file">
+            </div>
     </div>
     <div id="notebook-holder"></div>
-    <div id="error"></div>
+    <div id="error"style="padding-top:100px"></div>
 </div>
+
 <script src="js/nbpreview.js"></script>
-<script>
-        const targetNode = document.getElementById('notebook-holder');
-        const config = { attributes: true, childList: true, subtree: true };
-        const callback = (mutationList, observer) => {
-				for (const mutation of mutationList) {
-					if (mutation.type === 'childList') {
-						console.log('A child node has been added or removed.');
-						document.getElementById('controls').hidden=true;
-					}
-				}
-				};
-const observer = new MutationObserver(callback);
-observer.observe(targetNode, config);
-        </script>
+
 
 </body>
+
 </html>

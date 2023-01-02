@@ -16,7 +16,7 @@ body {
 }
 
 #controls {
-    border: 1px dotted #CCC;
+    /*border: 1px dotted #CCC;*/
     padding: 0.75em;
     margin-bottom: 0.5em;
     background-color: #EEF;
