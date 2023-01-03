@@ -31,6 +31,7 @@
 					$controls.hidden=true;
 					$error.textContent="";
 					notebook.style.display = "block";
+					$holder.style.fontSize = ".5em";
 				}else{
 					console.log("Invalid file");
 					$error.textContent = "Please upload correct ipynb format file";

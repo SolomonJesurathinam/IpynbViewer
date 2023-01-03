@@ -76,14 +76,14 @@
         <input type = file id = "fileUpload" class="fileUpload">
     </div>
 
-    <div id="file-upload-filename"></div>
-
     <div style ="padding-top: 100px">
         <center>
             <span id="error"></span>
         </center>
     </div>
 </div>
+
+<div id="file-upload-filename"></div>
 
 
 
@@ -130,7 +130,7 @@
     }
        rd.readAsText(fn)
        input.hidden = true
-       titleValue.hidden = true
+       titleValue.style.display = "none"
        fileHead.hidden = true
        error.textContent =""
        header.hidden=true
