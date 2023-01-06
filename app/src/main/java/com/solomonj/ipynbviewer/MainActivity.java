@@ -3,7 +3,10 @@ package com.solomonj.ipynbviewer;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,11 +43,18 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     private ProductDetails productDetails;
     private Purchase purchase;
     private static final String TAG = MainActivity.class.getName();
+    public static final String MyPRE = "adFlagger" ;
+    SharedPreferences sharedPref;
+    boolean adFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedPref = getSharedPreferences(MyPRE, Context.MODE_PRIVATE);
+        adFlag = sharedPref.getBoolean("adFlag",false);
+        Log.i(TAG, "Flag 1: "+adFlag);
 
 
         //initialise button and spinner
@@ -114,13 +124,13 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                     completePurchase(purchase);
                 }
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-                Log.i(TAG, "onPurchasesUpdated: Purchase Canceled");
+                Log.w(TAG, "onPurchasesUpdated: Purchase Canceled");
                 billingClient.endConnection();
-                Log.i(TAG,"On Connection Status: Terminated");
+                Log.w(TAG,"On Connection Status: Terminated");
             } else {
-                Log.i(TAG, "onPurchasesUpdated: Error");
+                Log.e(TAG, "onPurchasesUpdated: Error");
                 billingClient.endConnection();
-                Log.i(TAG,"On Connection Status: Terminated");
+                Log.w(TAG,"On Connection Status: Terminated");
             }
 
         }
@@ -193,8 +203,12 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         purchase = item;
         if(purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED){
             Log.i(TAG,"On Purchases: Purchase Complete "+purchase.getProducts().toString());
+            editSharedPref(true);
+            adFlag = sharedPref.getBoolean("adFlag",false);
+            Log.i(TAG,"FLAG 2: "+adFlag);
         }
     }
+
 
     //Get Purchase History
     private void purchasesHistory(){
@@ -202,7 +216,24 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                         BillingClient.ProductType.INAPP).build(),
                 new PurchasesResponseListener() {
                     public void onQueryPurchasesResponse(BillingResult billingResult, List purchases) {
-                        Log.d(TAG,"Purchase History "+purchases.toString());
+                        if(!purchases.isEmpty()){
+                            Log.i(TAG,"Purchase History "+purchases.toString());
+                            if(purchases.toString().contains("com.solomonj.ipynbview.ads")){
+                                editSharedPref(true);
+                                adFlag = sharedPref.getBoolean("adFlag",false);
+                                Log.i(TAG,"FLAG 3: "+adFlag);
+                            }else{
+                                Log.i(TAG,"Purchase History: Have not purchased com.solomonj.ipynbview.ads");
+                                editSharedPref(false);
+                                adFlag = sharedPref.getBoolean("adFlag",false);
+                                Log.i(TAG,"FLAG 4: "+adFlag);
+                            }
+                        }else{
+                            Log.i(TAG,"No Purchases available");
+                            editSharedPref(false);
+                            adFlag = sharedPref.getBoolean("adFlag",false);
+                            Log.i(TAG,"FLAG 5: "+adFlag);
+                        }
                     }
                 }
         );
@@ -222,7 +253,16 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     protected void onStop() {
         super.onStop();
         billingClient.endConnection();
-        Log.i(TAG,"On Connection Status: Terminated");
+        Log.w(TAG,"On Connection Status: Terminated");
+    }
+
+
+    //shared preferences editor method
+    private void editSharedPref(boolean flagValue){
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("adFlag",flagValue);
+        editor.apply();
+        editor.commit();
     }
 
 }
