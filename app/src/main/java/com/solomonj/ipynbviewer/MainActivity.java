@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
@@ -241,10 +243,23 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     private void completePurchase(Purchase item) {
         purchase = item;
         if(purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED){
-            Log.i(TAG,"On Purchases: Purchase Complete "+purchase.getProducts().toString());
-            editSharedPref(true);
-            adFlag = sharedPref.getBoolean("adFlag",false);
-            Log.i(TAG,"FLAG 2: "+adFlag);
+            if(!purchase.isAcknowledged()){
+                AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.getPurchaseToken()).build();
+                billingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
+                    @Override
+                    public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+                        Log.i(TAG,"On Purchases: Purchase Complete and Acknowledged "+purchase.getProducts().toString());
+                        editSharedPref(true);
+                        adFlag = sharedPref.getBoolean("adFlag",false);
+                        Log.i(TAG,"FLAG 2.1: "+adFlag);
+                    }
+                });
+            }else{
+                Log.i(TAG,"On Purchases: Purchase Complete "+purchase.getProducts().toString());
+                editSharedPref(true);
+                adFlag = sharedPref.getBoolean("adFlag",false);
+                Log.i(TAG,"FLAG 2: "+adFlag);
+            }
         }
     }
 
