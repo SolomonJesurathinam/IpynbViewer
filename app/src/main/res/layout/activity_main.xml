@@ -12,16 +12,16 @@
         android:layout_height="48dp"
         android:layout_marginTop="28dp"
         android:layout_marginBottom="100dp"
+        android:background="@drawable/mybutton"
         android:text="Get Started"
+        android:textColor="@color/colorText"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.044"
-        android:background="@drawable/mybutton"
-        android:textColor="@color/colorText"
-        app:backgroundTint="@null"/>
+        app:layout_constraintVertical_bias="0.044" />
 
     <TextView
         android:id="@+id/title"
@@ -93,6 +93,30 @@
         android:src="@drawable/removeads"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/mediumAds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="288dp"
+        android:layout_height="194dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="16dp"
+        app:adSize="MEDIUM_RECTANGLE"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/getStarted"
+        app:layout_constraintVertical_bias="1.0"></com.google.android.gms.ads.AdView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
