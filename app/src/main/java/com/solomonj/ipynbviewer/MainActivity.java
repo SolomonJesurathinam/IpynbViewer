@@ -27,9 +27,12 @@ import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchaseHistoryRecord;
+import com.android.billingclient.api.PurchaseHistoryResponseListener;
 import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryPurchaseHistoryParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -87,7 +90,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         }else{
             Log.i(TAG,"AdFlag is "+adFlag+" so the ads are not loaded");
         }
-
 
 
         //initialise button and spinner
@@ -271,20 +273,25 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                 new PurchasesResponseListener() {
                     public void onQueryPurchasesResponse(BillingResult billingResult, List purchases) {
                         if(!purchases.isEmpty()){
-                            Log.i(TAG,"Purchase History "+purchases.toString());
-                            if(purchases.toString().contains("com.solomonj.ipynbview.ads")){
-                                editSharedPref(true);
-                                adFlag = sharedPref.getBoolean("adFlag",false);
-                                Log.i(TAG,"FLAG 3: "+adFlag);
-                            }else{
-                                Log.i(TAG,"Purchase History: Have not purchased com.solomonj.ipynbview.ads");
-                                editSharedPref(false);
-                                adFlag = sharedPref.getBoolean("adFlag",false);
-                                Log.i(TAG,"FLAG 4: "+adFlag);
+                            for(Object singlePurchase : purchases){
+                                Log.i(TAG,"Purchase History "+singlePurchase.toString());
+                                if(singlePurchase.toString().contains("com.solomonj.ipynbview.ads")){
+                                    if(singlePurchase.toString().contains("\"purchaseState\":0")){
+                                        editSharedPref(true);
+                                        adFlag = sharedPref.getBoolean("adFlag",false);
+                                        Log.i(TAG,"FLAG 3: "+adFlag);
+                                    }else{
+                                        Log.e(TAG,"Purchase State is not 0");
+                                    }
+                                }else{
+                                    Log.i(TAG,"Purchase History: Have not purchased com.solomonj.ipynbview.ads");
+                                    editSharedPref(false);
+                                    adFlag = sharedPref.getBoolean("adFlag",false);
+                                    Log.i(TAG,"FLAG 4: "+adFlag);
+                                }
                             }
                         }else{
                             Log.i(TAG,"No Purchases available");
-                            //editSharedPref(false);
                             adFlag = sharedPref.getBoolean("adFlag",false);
                             Log.i(TAG,"FLAG 5: "+adFlag);
                         }
@@ -329,7 +336,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
     //Rectangle Banner Ad
     private void requestNewBanner(){
-        //Original id unit - ca-app-pub-1715775523919691/5356032797
+        //Original id unit - ca-app-pub-4449150732190604/3922551687
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
@@ -340,7 +347,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         AdRequest adRequest = new AdRequest.Builder().build();
 
         //Interestial Ad
-        //Original id unit - ca-app-pub-1715775523919691/3195691742
+        //Original id unit - ca-app-pub-4449150732190604/3814740471
         InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest, new InterstitialAdLoadCallback() {
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
