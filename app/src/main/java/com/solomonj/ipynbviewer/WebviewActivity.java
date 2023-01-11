@@ -5,6 +5,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
@@ -13,7 +14,6 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,6 +38,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -64,7 +66,7 @@ public class WebviewActivity extends AppCompatActivity {
     public static final String PermissionDeniedCount = "PermissionDeniedCount";
     SharedPreferences sharedpreferences;
     int counter;
-    ProgressDialog progressDialog;
+    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +86,7 @@ public class WebviewActivity extends AppCompatActivity {
         webView = (WebView) findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(false);
-        webView.getSettings().setAppCacheEnabled(false);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(true);
@@ -178,7 +180,7 @@ public class WebviewActivity extends AppCompatActivity {
     //URL Overloading, blocks url in Webview
     private class xWebViewClient extends WebViewClient {
         @Override
-        public boolean shouldOverrideUrlLoading(android.webkit.WebView view, String url) {
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             //view.loadUrl(url);
             return true;
         }
@@ -283,7 +285,7 @@ public class WebviewActivity extends AppCompatActivity {
                         try{
                             saveAutomatically(fname);
                         }catch (Exception e){
-                            progressDialog.dismiss();
+                            dialog.dismiss();
                             Toast.makeText(WebviewActivity.this, "Failed to save pdf, opening default Print method", Toast.LENGTH_LONG).show();
                             createWebPrintJob(webView, WebviewActivity.this, fname);
                         }
@@ -314,9 +316,12 @@ public class WebviewActivity extends AppCompatActivity {
     }
 
     public void saveAutomatically(String fname){
-        progressDialog = new ProgressDialog(WebviewActivity.this);
-        progressDialog.setMessage("Please wait, Downloading File");
-        progressDialog.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true); // if you want user to wait for some process to finish,
+        builder.setView(R.layout.layout_loading_dialog);
+        dialog = builder.create();
+        dialog.show();
+
         PdfView.createWebPrintJob(WebviewActivity.this, webView, getDirectory(), fname+".pdf", new PdfView.Callback() {
             @Override
             public void success(String s) {
@@ -346,13 +351,13 @@ public class WebviewActivity extends AppCompatActivity {
                         }
                         file.delete();
                         Toast.makeText(WebviewActivity.this, "PDF Downloaded at Documents/IpynbViewer", Toast.LENGTH_LONG).show();
-                        progressDialog.dismiss();
+                        dialog.dismiss();
                     }else{
-                        progressDialog.dismiss();
+                        dialog.dismiss();
                         Toast.makeText(WebviewActivity.this,"Something happened, Please download again",Toast.LENGTH_SHORT).show();
                     }
                 }else{
-                    progressDialog.dismiss();
+                    dialog.dismiss();
                     Toast.makeText(WebviewActivity.this, "PDF Downloaded at Documents/IpynbViewer", Toast.LENGTH_LONG).show();
                 }
 
@@ -360,7 +365,7 @@ public class WebviewActivity extends AppCompatActivity {
 
             @Override
             public void failure() {
-                progressDialog.dismiss();
+                dialog.dismiss();
                 Toast.makeText(WebviewActivity.this, "Storage access is denied, opening default Print method", Toast.LENGTH_LONG).show();
                 createWebPrintJob(webView, WebviewActivity.this, fname);
             }

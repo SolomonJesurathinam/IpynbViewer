@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
         sharedPref = getSharedPreferences(MyPRE, Context.MODE_PRIVATE);
         adFlag = sharedPref.getBoolean("adFlag",false);
-        Log.i(TAG, "Flag 1: "+adFlag);
+        Log.i(TAG, "Flag - Default value from Shared Preferences: "+adFlag);
 
 
         //Adview with flag condition
@@ -252,14 +252,14 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                         Log.i(TAG,"On Purchases: Purchase Complete and Acknowledged "+purchase.getProducts().toString());
                         editSharedPref(true);
                         adFlag = sharedPref.getBoolean("adFlag",false);
-                        Log.i(TAG,"FLAG 2.1: "+adFlag);
+                        Log.i(TAG,"FLAG - Value set to true due to Purchase and Acknowledge Complete: "+adFlag);
                     }
                 });
             }else{
                 Log.i(TAG,"On Purchases: Purchase Complete "+purchase.getProducts().toString());
                 editSharedPref(true);
                 adFlag = sharedPref.getBoolean("adFlag",false);
-                Log.i(TAG,"FLAG 2: "+adFlag);
+                Log.i(TAG,"FLAG - Value set to true due to Purchase Complete: "+adFlag);
             }
         }
     }
@@ -276,9 +276,13 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                                 Log.i(TAG,"Purchase History "+singlePurchase.toString());
                                 if(singlePurchase.toString().contains("com.solomonj.ipynbview.ads")){
                                     if(singlePurchase.toString().contains("\"purchaseState\":0")){
-                                        editSharedPref(true);
-                                        adFlag = sharedPref.getBoolean("adFlag",false);
-                                        Log.i(TAG,"FLAG 3: "+adFlag);
+                                        if(singlePurchase.toString().contains("\"acknowledged\":false")){
+                                            acknowlwdgePendingPurchase(getPurchaseToken(singlePurchase));
+                                        }else{
+                                            editSharedPref(true);
+                                            adFlag = sharedPref.getBoolean("adFlag",false);
+                                            Log.i(TAG,"FLAG - Value set to true due to Previous Purchase and Acknowledge Complete: "+adFlag);
+                                        }
                                     }else{
                                         Log.e(TAG,"Purchase State is not 0");
                                     }
@@ -286,13 +290,13 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                                     Log.i(TAG,"Purchase History: Have not purchased com.solomonj.ipynbview.ads");
                                     editSharedPref(false);
                                     adFlag = sharedPref.getBoolean("adFlag",false);
-                                    Log.i(TAG,"FLAG 4: "+adFlag);
+                                    Log.i(TAG,"FLAG - Value set to false as there are no purchases for com.solomonj.ipynbview.ads: "+adFlag);
                                 }
                             }
                         }else{
                             Log.i(TAG,"No Purchases available");
                             adFlag = sharedPref.getBoolean("adFlag",false);
-                            Log.i(TAG,"FLAG 5: "+adFlag);
+                            Log.i(TAG,"FLAG - Default value when there are no purchases: "+adFlag);
                         }
                     }
                 }
@@ -319,10 +323,15 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
     //shared preferences editor method
     private void editSharedPref(boolean flagValue){
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("adFlag",flagValue);
-        editor.apply();
-        editor.commit();
+        Boolean checkFlag = sharedPref.getBoolean("adFlag",false);
+        if(flagValue != checkFlag){
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("adFlag",flagValue);
+            editor.apply();
+            editor.commit();
+        }else{
+            Log.w(TAG,"Flag is already "+flagValue+" so not editing");
+        }
     }
 
 
@@ -398,6 +407,30 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
             }
         });
 
+    }
+
+    public String getPurchaseToken(Object singlePurchase){
+        String purchaseToken = "";
+        String[] testPurchase = singlePurchase.toString().replaceAll("\"","").split(",");
+        for(String test : testPurchase){
+            if(test.contains("purchaseToken")){
+                purchaseToken = test.substring(14);
+            }
+        }
+        return purchaseToken;
+    }
+
+    public void acknowlwdgePendingPurchase(String purchaseToken){
+        AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchaseToken).build();
+        billingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
+            @Override
+            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+                Log.i(TAG,"On Pending Purchases: Purchase Complete and Acknowledged ");
+                editSharedPref(true);
+                adFlag = sharedPref.getBoolean("adFlag",false);
+                Log.i(TAG,"FLAG - Value set to true due to Pending Purchase and Acknowledge Complete: "+adFlag);
+            }
+        });
     }
 
 }
