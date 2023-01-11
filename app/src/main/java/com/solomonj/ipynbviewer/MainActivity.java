@@ -179,7 +179,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         }
     };
 
-
     //connect to Google Billing
     private void billingClient(){
         billingClient = BillingClient.newBuilder(this)
