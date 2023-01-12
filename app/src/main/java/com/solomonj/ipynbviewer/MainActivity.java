@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -107,7 +106,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                 }catch (NullPointerException e){
                     Log.e(TAG,"Billing error "+e.toString());
                 }
-
             }
         });
 
@@ -154,7 +152,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     }
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-
     }
 
 
@@ -175,7 +172,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                 billingClient.endConnection();
                 Log.w(TAG,"On Connection Status: Terminated");
             }
-
         }
     };
 
@@ -193,7 +189,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
             public void onBillingServiceDisconnected() {
                 Log.w(TAG,"On Connection Status : Disconnected");
             }
-
             @Override
             public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
                 if(billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK){
@@ -213,7 +208,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                                 .setProductType(BillingClient.ProductType.INAPP)
                                                 .build()))
                 .build();
-
         billingClient.queryProductDetailsAsync(
                 queryProductDetailsParams,
                 new ProductDetailsResponseListener() {
@@ -250,16 +244,16 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                     @Override
                     public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
                         Log.i(TAG,"On Purchases: Purchase Complete and Acknowledged "+purchase.getProducts().toString());
-                        editSharedPref(true);
+                        editSharedPref(true,"FLAG - Value set to true due to Purchase and Acknowledge Complete");
                         adFlag = sharedPref.getBoolean("adFlag",false);
-                        Log.i(TAG,"FLAG - Value set to true due to Purchase and Acknowledge Complete: "+adFlag);
+                        Log.i(TAG,"FLAG - Purchase and Acknowledge Complete Latest Value: "+adFlag);
                     }
                 });
             }else{
                 Log.i(TAG,"On Purchases: Purchase Complete "+purchase.getProducts().toString());
-                editSharedPref(true);
+                editSharedPref(true,"FLAG - Value set to true due to Purchase Complete");
                 adFlag = sharedPref.getBoolean("adFlag",false);
-                Log.i(TAG,"FLAG - Value set to true due to Purchase Complete: "+adFlag);
+                Log.i(TAG,"FLAG - Purchase Complete Latest Value: "+adFlag);
             }
         }
     }
@@ -267,6 +261,14 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
     //Get Purchase History
     private void purchasesHistory(){
+        billingClient.queryPurchaseHistoryAsync(QueryPurchaseHistoryParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),
+                new PurchaseHistoryResponseListener() {
+                    @Override
+                    public void onPurchaseHistoryResponse(@NonNull BillingResult billingResult, @NonNull List<PurchaseHistoryRecord> list) {
+                        Log.e(TAG,"Testing");
+                    }
+                });
+
         billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder().setProductType(
                         BillingClient.ProductType.INAPP).build(),
                 new PurchasesResponseListener() {
@@ -279,18 +281,18 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                                         if(singlePurchase.toString().contains("\"acknowledged\":false")){
                                             acknowlwdgePendingPurchase(getPurchaseToken(singlePurchase));
                                         }else{
-                                            editSharedPref(true);
+                                            editSharedPref(true,"FLAG - Value set to true due to Previous Purchase and Acknowledge Complete");
                                             adFlag = sharedPref.getBoolean("adFlag",false);
-                                            Log.i(TAG,"FLAG - Value set to true due to Previous Purchase and Acknowledge Complete: "+adFlag);
+                                            Log.i(TAG,"FLAG - Previous Purchase and Acknowledge Complete Latest value: "+adFlag);
                                         }
                                     }else{
                                         Log.e(TAG,"Purchase State is not 0");
                                     }
                                 }else{
                                     Log.i(TAG,"Purchase History: Have not purchased com.solomonj.ipynbview.ads");
-                                    editSharedPref(false);
+                                    editSharedPref(false,"FLAG - Value set to false as there are no purchases for com.solomonj.ipynbview.ads");
                                     adFlag = sharedPref.getBoolean("adFlag",false);
-                                    Log.i(TAG,"FLAG - Value set to false as there are no purchases for com.solomonj.ipynbview.ads: "+adFlag);
+                                    Log.i(TAG,"FLAG - No purchases for com.solomonj.ipynbview.ads Latest value: "+adFlag);
                                 }
                             }
                         }else{
@@ -322,23 +324,17 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
 
     //shared preferences editor method
-    private void editSharedPref(boolean flagValue){
+    private void editSharedPref(boolean flagValue, String message){
         Boolean checkFlag = sharedPref.getBoolean("adFlag",false);
         if(flagValue != checkFlag){
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean("adFlag",flagValue);
             editor.apply();
             editor.commit();
+            Log.w(TAG,message);
         }else{
             Log.w(TAG,"Flag is already "+flagValue+" so not editing");
         }
-    }
-
-
-    @Override
-    protected void onDestroy() {
-
-        super.onDestroy();
     }
 
 
@@ -409,6 +405,8 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
     }
 
+
+    //method to retrieve purchase token to acknowlwdge
     public String getPurchaseToken(Object singlePurchase){
         String purchaseToken = "";
         String[] testPurchase = singlePurchase.toString().replaceAll("\"","").split(",");
@@ -420,15 +418,17 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         return purchaseToken;
     }
 
+
+    //method to acknowlwdge purchase in purchase history
     public void acknowlwdgePendingPurchase(String purchaseToken){
         AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchaseToken).build();
         billingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
             @Override
             public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
                 Log.i(TAG,"On Pending Purchases: Purchase Complete and Acknowledged ");
-                editSharedPref(true);
+                editSharedPref(true,"FLAG - Value set to true due to Pending Purchase and Acknowledge Complete");
                 adFlag = sharedPref.getBoolean("adFlag",false);
-                Log.i(TAG,"FLAG - Value set to true due to Pending Purchase and Acknowledge Complete: "+adFlag);
+                Log.i(TAG,"FLAG - Pending Purchase and Acknowledge Complete Latest Value: "+adFlag);
             }
         });
     }

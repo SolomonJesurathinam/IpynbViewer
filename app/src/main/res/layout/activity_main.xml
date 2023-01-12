@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!--Get Started Button-->
     <Button
         android:id="@+id/getStarted"
         android:layout_width="wrap_content"
@@ -23,6 +24,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:layout_constraintVertical_bias="0.044" />
 
+    <!--Title-->
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -37,6 +39,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--Main Logo image-->
     <ImageView
         android:id="@+id/logoimg"
         android:layout_width="159dp"
@@ -48,6 +51,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
+    <!--Select Render items-->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="162dp"
@@ -72,6 +76,7 @@
             android:prompt="@string/title" />
     </LinearLayout>
 
+    <!--Logo Image-->
     <ImageView
         android:id="@+id/infologo"
         android:layout_width="25dp"
@@ -83,6 +88,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--Remove Ads Image-->
     <ImageView
         android:id="@+id/removeads"
         android:layout_width="32dp"
@@ -94,14 +100,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/mediumAds"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
+    <!--Ad Container-->
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="288dp"

@@ -43,9 +43,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
-
 import com.blankj.utilcode.util.PathUtils;
-import com.google.android.material.snackbar.Snackbar;
 import com.webviewtopdf.PdfView;
 import java.io.File;
 import java.io.FileInputStream;
@@ -97,6 +95,7 @@ public class WebviewActivity extends AppCompatActivity {
             webView.loadUrl(render2);
         }
 
+
         //File Intent to open file explorer for webview
         webView.setWebViewClient(new xWebViewClient());
         webView.setWebChromeClient(new WebChromeClient()
@@ -118,9 +117,11 @@ public class WebviewActivity extends AppCompatActivity {
             }
         });
 
+
         //Shared Preferences initilization
         sharedpreferences = getSharedPreferences(MyPREFERENCES,Context.MODE_PRIVATE);
         counter = sharedpreferences.getInt("PermissionDeniedCount", 0);
+
 
         //Get Write storage permission for saving PDF
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
@@ -315,6 +316,8 @@ public class WebviewActivity extends AppCompatActivity {
         }
     }
 
+
+    //method for save
     public void saveAutomatically(String fname){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true); // if you want user to wait for some process to finish,
@@ -371,6 +374,8 @@ public class WebviewActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
 
 }

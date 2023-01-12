@@ -48,6 +48,7 @@ public class information extends AppCompatActivity {
         });
     }
 
+
     //Chrome custom tab
     public static void openCustomTab(Activity activity, CustomTabsIntent customTabsIntent, Uri uri) {
         String packageName = "com.android.chrome";

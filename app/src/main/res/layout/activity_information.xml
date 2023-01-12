@@ -8,8 +8,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="5sp">
 
+        <!--Title-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,6 +23,7 @@
             android:textColor="@color/colorText"
             android:textSize="20sp"/>
 
+        <!--Experimental Feature-->
         <Button
             android:id="@+id/experimentalbtn"
             android:layout_width="wrap_content"
@@ -33,6 +36,7 @@
             tools:layout_editor_absoluteY="587dp"
             app:backgroundTint="@null"/>
 
+        <!--Question and Answers section-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,7 +103,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=" Different logic's are implemented in both renders"/>
+            android:text="Different rendering techniques are implemented in both renders"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -111,7 +115,19 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Click on the menu (three dots) on the top right side and click 'Save'. After the print preview is loaded we can customise it and click on 'Save as PDF'."/>
+            android:text="Click on the Download icon to Save."/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="How to customise and save as PDF ?"
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Click on the menu (three dots) on the top right side and click 'Customise'. After the print preview is loaded we can customise it and click on 'Save as PDF'."/>
 
         <TextView
             android:layout_width="match_parent"
@@ -123,7 +139,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pdf files are saved in the same folder where the ipynb files are loaded. For Experimental feature files are saved in the Downloads folder."/>
+            android:text="Files are saved in Documents/IpynbViewer folder. For Experimental feature files are saved in the Downloads folder."/>
 
         <TextView
             android:layout_width="match_parent"
