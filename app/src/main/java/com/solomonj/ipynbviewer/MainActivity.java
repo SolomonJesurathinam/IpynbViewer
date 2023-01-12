@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                 new PurchaseHistoryResponseListener() {
                     @Override
                     public void onPurchaseHistoryResponse(@NonNull BillingResult billingResult, @NonNull List<PurchaseHistoryRecord> list) {
-                        Log.e(TAG,"Testing");
+                        Log.e(TAG,"Testing1");
                     }
                 });
 
