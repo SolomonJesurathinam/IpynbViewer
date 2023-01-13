@@ -50,6 +50,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
+            android:text="In App Purchase - Remove Ads is not getting reflected in a different device? "
+            android:textStyle="bold"
+            android:textColor="@color/colorText"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Due to automatic Google cache, it takes some time to reflect. Alternatively please click on the 'Remove Ads' icon in Homepage and re-open the app"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
             android:text="What is Experimental Feature ?"
             android:textStyle="bold"
             android:textColor="@color/colorText"/>
@@ -57,6 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Conversion are happened in cloud using Jupyter NbConvert function and a pdf link is displayed."/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

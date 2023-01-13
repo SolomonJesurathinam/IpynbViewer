@@ -100,7 +100,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--Ad Container-->
+    <!--Ad Container ca-app-pub-3940256099942544/6300978111-->
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="288dp"
@@ -110,7 +110,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="16dp"
         app:adSize="MEDIUM_RECTANGLE"
-        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:adUnitId="ca-app-pub-4449150732190604/3922551687"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

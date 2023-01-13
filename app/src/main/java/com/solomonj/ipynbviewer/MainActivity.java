@@ -261,14 +261,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
     //Get Purchase History
     private void purchasesHistory(){
-        billingClient.queryPurchaseHistoryAsync(QueryPurchaseHistoryParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),
-                new PurchaseHistoryResponseListener() {
-                    @Override
-                    public void onPurchaseHistoryResponse(@NonNull BillingResult billingResult, @NonNull List<PurchaseHistoryRecord> list) {
-                        Log.e(TAG,"Testing1");
-                    }
-                });
-
         billingClient.queryPurchasesAsync(QueryPurchasesParams.newBuilder().setProductType(
                         BillingClient.ProductType.INAPP).build(),
                 new PurchasesResponseListener() {
@@ -351,8 +343,8 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         AdRequest adRequest = new AdRequest.Builder().build();
 
         //Interestial Ad
-        //Original id unit - ca-app-pub-4449150732190604/3814740471
-        InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest, new InterstitialAdLoadCallback() {
+        //Test id unit -ca-app-pub-3940256099942544/1033173712
+        InterstitialAd.load(this, "ca-app-pub-4449150732190604/3814740471", adRequest, new InterstitialAdLoadCallback() {
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
