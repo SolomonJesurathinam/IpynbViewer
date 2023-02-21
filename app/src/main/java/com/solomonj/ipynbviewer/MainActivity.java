@@ -344,7 +344,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
         //Interestial Ad
         //Test id unit -ca-app-pub-3940256099942544/1033173712
-        InterstitialAd.load(this, "ca-app-pub-4449150732190604/3814740471", adRequest, new InterstitialAdLoadCallback() {
+        InterstitialAd.load(this, "ca-app-pub-1715775523919691/7766223033", adRequest, new InterstitialAdLoadCallback() {
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
