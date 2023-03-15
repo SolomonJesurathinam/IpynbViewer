@@ -3,6 +3,8 @@
     <string-array name="dropdown">
         <item>Render1</item>
         <item>Render2</item>
+        <!-- new changes made 3/13/2023 -->
+        <item>NbConvert</item>
     </string-array>
 
 </resources>

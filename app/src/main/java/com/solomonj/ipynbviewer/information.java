@@ -20,14 +20,21 @@ import android.widget.Toast;
 
 public class information extends AppCompatActivity {
 
+    //new changes commented 3/13/2023
+    /*
     private Button experimentalbtn;
     String url = "https://ipynbconverter.streamlit.app/";
+     */
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information);
 
+
+        //new changes commented 3/13/2023
+        /*
         //Experimental button
         experimentalbtn = findViewById(R.id.experimentalbtn);
         experimentalbtn.setOnClickListener(new View.OnClickListener() {
@@ -46,9 +53,14 @@ public class information extends AppCompatActivity {
 
             }
         });
+         */
+
+
     }
 
 
+    //new changes commented 3/13/2023
+    /*
     //Chrome custom tab
     public static void openCustomTab(Activity activity, CustomTabsIntent customTabsIntent, Uri uri) {
         String packageName = "com.android.chrome";
@@ -59,4 +71,6 @@ public class information extends AppCompatActivity {
             activity.startActivity(new Intent(Intent.ACTION_VIEW, uri));
         }
     }
+     */
+
 }

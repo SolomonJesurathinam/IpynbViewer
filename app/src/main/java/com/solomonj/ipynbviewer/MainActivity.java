@@ -121,9 +121,16 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), WebviewActivity.class);
-                intent.putExtra("render",render);
-                startActivity(intent);
+                //new changes made - 3/13/023
+                if(!render.equalsIgnoreCase("NbConvert")){
+                    Intent intent = new Intent(getApplicationContext(), WebviewActivity.class);
+                    intent.putExtra("render",render);
+                    startActivity(intent);
+                }else if(render.equalsIgnoreCase("NbConvert")){
+                    Intent intent = new Intent(getApplicationContext(),original_NB.class);
+                    startActivity(intent);
+                }
+
             }
         });
 
