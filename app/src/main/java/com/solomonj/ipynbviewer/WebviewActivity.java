@@ -171,9 +171,11 @@ public class WebviewActivity extends AppCompatActivity {
                             Toast.makeText(WebviewActivity.this, "Please re-select the file, activity restarted due to low memory", Toast.LENGTH_LONG).show();
                         }
                     }else if(result.getResultCode() == Activity.RESULT_CANCELED){
-                        uploadMessage.onReceiveValue(null);
+                        //added if condition to check null condition to avoid  com.solomonj.ipynbviewer.WebviewActivity$2.onActivityResult errors
+                        if(uploadMessage != null){
+                            uploadMessage.onReceiveValue(null);
+                        }
                     }
-
                 }
             });
 
