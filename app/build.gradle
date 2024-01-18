@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace 'com.solomonj.ipynbviewer'
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.solomonj.ipynbviewer"
-        minSdk 21
-        targetSdk 32
-        versionCode 6
-        versionName "1.5"
+        minSdk 28
+        targetSdk 34
+        versionCode 7
+        versionName "1.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,9 +37,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     implementation "androidx.browser:browser:1.4.0"
-    implementation 'com.github.pramodkr123:ConvertWebViewToPdfDemo:1.0.4'
+    //implementation 'com.github.pramodkr123:ConvertWebViewToPdfDemo:1.0.4'
     implementation 'com.blankj:utilcodex:1.31.1'
-    def billing_version = "5.1.0"
+    def billing_version = "6.1.0"
     implementation "com.android.billingclient:billing:$billing_version"
     implementation 'com.google.guava:guava:31.1-android'
     implementation 'com.google.android.gms:play-services-ads:21.4.0'

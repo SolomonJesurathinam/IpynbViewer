@@ -4,16 +4,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -64,6 +73,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     boolean adFlag;
     private InterstitialAd mInterstitialAd;
     private AdView mAdView;
+    LinearLayout getPro;
 
 
 
@@ -148,6 +158,44 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
             }
         });
 
+        //new changes - 1/15/2023
+        getPro = findViewById(R.id.getPro);
+        getPro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater =(LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(R.layout.popup_get_pro, null);
+
+                //Create Popup window
+                PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, true);
+                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                //Handle Button
+                Button upgrade = popupView.findViewById(R.id.upgradePro);
+                Button notNow = popupView.findViewById(R.id.notNow);
+
+                upgrade.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent goToMarket = new Intent(Intent.ACTION_VIEW)
+                                .setData(Uri.parse("market://details?id=com.solomonj.ipynbviewerpro"));
+                        try{
+                            startActivity(goToMarket);
+                        } catch(ActivityNotFoundException e){
+                            Toast.makeText(getApplicationContext(), "Unable to find market app \nSearch Ipynb Viewer Pro in Playstore",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+                notNow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
+                popupWindow.showAtLocation(findViewById(R.id.homePage), Gravity.CENTER,0,0);
+            }
+        });
     }
 
 

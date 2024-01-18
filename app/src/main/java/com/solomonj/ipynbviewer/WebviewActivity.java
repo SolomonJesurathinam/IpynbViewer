@@ -31,6 +31,7 @@ import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -42,9 +43,9 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.Toast;
 import com.blankj.utilcode.util.PathUtils;
-import com.webviewtopdf.PdfView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -124,14 +125,14 @@ public class WebviewActivity extends AppCompatActivity {
 
 
         //Get Write storage permission for saving PDF
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-            if(counter < 2){
+        if(Build.VERSION.SDK_INT<29){
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
                 Toast.makeText(this, "Please grant storage permission to save pdf automatically", Toast.LENGTH_LONG).show();
             }
-
         }
+
 
     }
 
@@ -142,17 +143,46 @@ public class WebviewActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1:
-                if (grantResults.length >0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
-                    if(counter<8){
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
-                        counter++;
-                        editor.putInt(PermissionDeniedCount,counter);
-                        editor.commit();
+                if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(getApplicationContext(),"Access granted, Try Now",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(this, "Storage access is required to download files automatically", Toast.LENGTH_SHORT).show();
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        showPermissionSettingsDialog();
                     }
                 }
         }
     }
 
+    private void showPermissionSettingsDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Allow Permission Manually")
+                .setMessage("Need Storage Permission to download pdf to devices, please allow manually from settings.")
+                .setPositiveButton("App Settings", (dialogInterface, which) -> {
+                    // Intent to open app settings
+                    openAppSettings();
+                })
+                .setNegativeButton("Cancel", (dialogInterface, which) -> dialogInterface.dismiss())
+                .create();
+        dialog.setOnShowListener(dialogInterface -> {
+            // Change the positive button color
+            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            positiveButton.setTextColor(ContextCompat.getColor(this, R.color.black));
+
+            // Change the negative button color
+            Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            negativeButton.setTextColor(ContextCompat.getColor(this, R.color.black));
+        });
+        dialog.show();
+    }
+
+    //Open settings to provide manual storage access
+    private void openAppSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
 
     //File picker for selecting ipynb file
     ActivityResultLauncher<Intent> sActivityLauncher = registerForActivityResult(
@@ -284,13 +314,29 @@ public class WebviewActivity extends AppCompatActivity {
                 if(uri != null){
                     String fname = getFilename(uri);
                     if(fname.endsWith(".ipynb")){
-                        fname = fname.replace(".ipynb","");
-                        try{
-                            saveAutomatically(fname);
-                        }catch (Exception e){
-                            dialog.dismiss();
-                            Toast.makeText(WebviewActivity.this, "Failed to save pdf, opening default Print method", Toast.LENGTH_LONG).show();
-                            createWebPrintJob(webView, WebviewActivity.this, fname);
+                        if(Build.VERSION.SDK_INT<29) {
+                            if (ContextCompat.checkSelfPermission(WebviewActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(WebviewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                                Toast.makeText(this, "Please grant storage permission to save pdf automatically", Toast.LENGTH_LONG).show();
+                            }else{
+                                fname = fname.replace(".ipynb","");
+                                try{
+                                    saveAutomatically(fname);
+                                }catch (Exception e){
+                                    dialog.dismiss();
+                                    Toast.makeText(WebviewActivity.this, "Failed to save pdf, opening default Print method", Toast.LENGTH_LONG).show();
+                                    createWebPrintJob(webView, WebviewActivity.this, fname);
+                                }
+                            }
+                        }else{
+                            fname = fname.replace(".ipynb","");
+                            try{
+                                saveAutomatically(fname);
+                            }catch (Exception e){
+                                dialog.dismiss();
+                                Toast.makeText(WebviewActivity.this, "Failed to save pdf, opening default Print method", Toast.LENGTH_LONG).show();
+                                createWebPrintJob(webView, WebviewActivity.this, fname);
+                            }
                         }
                         return true;
                     }else{

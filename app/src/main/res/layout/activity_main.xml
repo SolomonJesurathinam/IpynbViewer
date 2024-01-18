@@ -1,122 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/homePage">
 
-    <!--Get Started Button-->
-    <Button
-        android:id="@+id/getStarted"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginBottom="100dp"
-        android:background="@drawable/mybutton"
-        android:text="Get Started"
-        android:textColor="@color/colorText"
-        app:backgroundTint="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.044" />
-
-    <!--Title-->
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
-        android:text="IPYNB VIEWER"
-        android:textColor="@color/colorText"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!--Main Logo image-->
-    <ImageView
-        android:id="@+id/logoimg"
-        android:layout_width="159dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="36dp"
-        android:src="@drawable/logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
-
-    <!--Select Render items-->
     <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="162dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoimg">
+        android:gravity="center"
+        android:padding="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/infologo"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:alpha="0.5"
+                android:src="@drawable/info"
+                android:layout_alignParentLeft="true"/>
+
+            <ImageView
+                android:id="@+id/removeads"
+                android:layout_width="32dp"
+                android:layout_height="31dp"
+                android:alpha="0.5"
+                android:src="@drawable/removeads"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Render"
-            android:textSize="12sp" />
+            android:text="IPYNB VIEWER"
+            android:textColor="@color/colorText"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="25dp"/>
 
-        <Spinner
-            android:id="@+id/selectRender"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/getPro"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:prompt="@string/title" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/pro"
+                android:layout_marginRight="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GET PRO"
+                android:textColor="@color/colorText"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/logoimg"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/logo"/>
+
+        <!--Select Render items-->
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Render"
+                android:textSize="15sp" />
+
+            <Spinner
+                android:id="@+id/selectRender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:prompt="@string/title"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/getStarted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/mybutton"
+            android:text="Get Started"
+            android:textColor="@color/colorText"
+            app:backgroundTint="@null"/>
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="16dp"
+            app:adSize="MEDIUM_RECTANGLE"
+            app:adUnitId="ca-app-pub-1715775523919691/3323866400"/>
+
     </LinearLayout>
 
-    <!--Logo Image-->
-    <ImageView
-        android:id="@+id/infologo"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="28dp"
-        android:alpha="0.5"
-        android:src="@drawable/info"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!--Remove Ads Image-->
-    <ImageView
-        android:id="@+id/removeads"
-        android:layout_width="32dp"
-        android:layout_height="31dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="24dp"
-        android:alpha="0.5"
-        android:src="@drawable/removeads"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!--Ad Container ca-app-pub-3940256099942544/6300978111-->
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="288dp"
-        android:layout_height="194dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="16dp"
-        app:adSize="MEDIUM_RECTANGLE"
-        app:adUnitId="ca-app-pub-1715775523919691/3323866400"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getStarted"
-        app:layout_constraintVertical_bias="1.0"></com.google.android.gms.ads.AdView>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
 
