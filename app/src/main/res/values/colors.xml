@@ -8,4 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorText">#FF000000</color>
+
+
+<!--    new colors-->
+    <color name="widgets">#A65E2E</color>
+    <color name="widgetsText">#FFFFFF</color>
 </resources>

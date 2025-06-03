@@ -7,7 +7,6 @@ import android.os.Build;
 import android.print.PdfPrint;
 import android.print.PrintAttributes;
 import android.webkit.WebView;
-
 import java.io.File;
 
 

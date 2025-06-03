@@ -27,6 +27,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
                 android:text="Get IPYNB Viewer Pro! 🌟"
+                android:fontFamily="@font/roboto_condensed_regular"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
@@ -35,10 +36,11 @@
                 android:id="@+id/tvFeatureList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="- Ad-Free Experience\n- Open directly from File Manager\n- Offline Rendering\n- Display all ipynb files in app\n- New Modern UI\n- View/Share converted PDF's\n- In App Feedback\n- Bug Fixes and Performance Updates"
+                android:text="- Ad-Free Experience\n- Offline Rendering\n- Display all ipynb files in app\n\- View/Share converted PDF's\n- Bug Fixes and Performance Updates"
                 android:layout_marginTop="8dp"
                 android:textColor="@color/black"
                 android:layout_centerHorizontal="true"
+                android:fontFamily="@font/roboto_condensed_regular"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <RelativeLayout
@@ -48,28 +50,33 @@
 
                 <Button
                     android:id="@+id/upgradePro"
+                    style="@style/Widget.Material3.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_condensed_regular"
+                    android:backgroundTint="@color/widgets"
                     android:layout_alignParentRight="true"
-                    android:background="@drawable/mybutton"
-                    android:textColor="@color/black"
+                    android:textColor="@color/widgetsText"
                     app:backgroundTint="@null"
                     android:text="✨ Upgrade to Pro ✨"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
+
                 <Button
                     android:id="@+id/notNow"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:text="Not Now"
-                    app:backgroundTint="@null"
-                    android:background="@drawable/mybutton"
-                    android:textColor="@color/black"
                     android:textSize="12sp"
+                    android:fontFamily="@font/roboto_condensed_regular"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
-                    app:rippleColor="#66A65E2E" />
+                    app:rippleColor="#66A65E2E"
+                    app:strokeColor="@color/widgets"/>
+
 
             </RelativeLayout>
 

@@ -1,80 +1,65 @@
 package com.solomonj.ipynbviewer;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.preference.PreferenceManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.Spinner;
+import android.widget.RadioGroup;
 import android.widget.Toast;
-
 import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ProductDetails;
-import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchaseHistoryRecord;
-import com.android.billingclient.api.PurchaseHistoryResponseListener;
 import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.QueryProductDetailsParams;
-import com.android.billingclient.api.QueryPurchaseHistoryParams;
 import com.android.billingclient.api.QueryPurchasesParams;
-import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
-    private Button button;
-    private Spinner spinner;
-    private String[] dropValues;
-    private ImageView infologo,removeAds;
-    private String render;
     private BillingClient billingClient;
-    private ProductDetails productDetails;
-    private Purchase purchase;
     private static final String TAG = MainActivity.class.getName();
     public static final String MyPRE = "adFlagger" ;
     SharedPreferences sharedPref;
+    SharedPreferences homePagePref;
     boolean adFlag;
-    private InterstitialAd mInterstitialAd;
     private AdView mAdView;
-    LinearLayout getPro;
+    Button getPro;
 
+    //new ui changes
+    RadioGroup radioRender;
+    Button choosefile, convertOnline;
+    private ActivityResultLauncher<String[]> mGetContent;
 
 
     @Override
@@ -86,6 +71,9 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         adFlag = sharedPref.getBoolean("adFlag",false);
         Log.i(TAG, "Flag - Default value from Shared Preferences: "+adFlag);
 
+        //new UI changes
+        homePagePref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        homePagePref.getString("renderKey","Real"); //set default radio
 
         //Adview with flag condition
         if(adFlag == false){
@@ -95,68 +83,9 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                 }
             });
             requestNewBanner();
-            requestNewInterstitial();
         }else{
             Log.i(TAG,"AdFlag is "+adFlag+" so the ads are not loaded");
         }
-
-
-        //initialise button and spinner
-        button = findViewById(R.id.getStarted);
-        spinner = findViewById(R.id.selectRender);
-
-
-        //Image to remove ads with on click
-        removeAds = findViewById(R.id.removeads);
-        removeAds.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    makePurchase();
-                }catch (NullPointerException e){
-                    Log.e(TAG,"Billing error "+e.toString());
-                }
-            }
-        });
-
-
-        //Render dropdown values
-        dropValues = getResources().getStringArray(R.array.dropdown);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, dropValues);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
-
-
-        //Get started - button click
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //new changes made - 3/13/023
-                if(!render.equalsIgnoreCase("NbConvert")){
-                    Intent intent = new Intent(getApplicationContext(), WebviewActivity.class);
-                    intent.putExtra("render",render);
-                    startActivity(intent);
-                }else if(render.equalsIgnoreCase("NbConvert")){
-                    Intent intent = new Intent(getApplicationContext(),original_NB.class);
-                    startActivity(intent);
-                }
-
-            }
-        });
-
-
-        //info logo image with on click
-        infologo = findViewById(R.id.infologo);
-        infologo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mInterstitialAd != null) {
-                    mInterstitialAd.show(MainActivity.this);
-                }
-                Intent intent = new Intent(getApplicationContext(),information.class);
-                startActivity(intent);
-            }
-        });
 
         //new changes - 1/15/2023
         getPro = findViewById(R.id.getPro);
@@ -196,28 +125,107 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                 popupWindow.showAtLocation(findViewById(R.id.homePage), Gravity.CENTER,0,0);
             }
         });
+
+        //new UI Changes
+        radioRender = findViewById(R.id.radioRender);
+        radiobuttonLogic();
+
+        choosefile = findViewById(R.id.choosefile);
+        fileHandling();
+
+        convertOnline = findViewById(R.id.convertOnline);
+        convertOnline.setOnClickListener(v->{
+            Intent intent = new Intent(getApplicationContext(),Online.class);
+            startActivity(intent);
+        });
+
     }
 
-
-    //Dropdown items selected callback
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        Toast.makeText(getApplicationContext(), dropValues[i], Toast.LENGTH_SHORT).show();
-        render = dropValues[i];
+    //new UI Changes
+    private void radiobuttonLogic(){
+        if(homePagePref.getString("renderKey","Real").equalsIgnoreCase("Real")){
+            radioRender.check(R.id.radioReal);
+        }else if(homePagePref.getString("renderKey","Real").equalsIgnoreCase("Basic")){
+            radioRender.check(R.id.radioBasic);
+        }
+        radioRender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                SharedPreferences.Editor editor = homePagePref.edit();
+                if(checkedId == R.id.radioReal){
+                    editor.putString("renderKey","Real");
+                }else if(checkedId == R.id.radioBasic){
+                    editor.putString("renderKey","Basic");
+                }
+                editor.apply();
+                editor.commit();
+            }
+        });
     }
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    public void fileHandling(){
+        mGetContent = registerForActivityResult(new ActivityResultContracts.OpenDocument(),
+                new androidx.activity.result.ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri uri) {
+                        if(uri != null){
+                            String fileName = getFilename(getApplicationContext(),uri);
+                            if (fileName != null && fileName.endsWith(".ipynb")) {
+                                getContentResolver().takePersistableUriPermission(
+                                        uri,
+                                        Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                                );
+                                //Toast.makeText(getApplicationContext(),uri.getPath(),Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(getApplicationContext(), Webview.class);
+                                intent.putExtra("filePath",uri.toString());
+                                startActivity(intent);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                                    overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_up, R.anim.stay);
+                                } else {
+                                    overridePendingTransition(R.anim.slide_up, R.anim.stay);
+                                }
+                            } else {
+                                Toast.makeText(getApplicationContext(),"Only ipynb files are allowed",Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    }
+                });
+
+        choosefile.setOnClickListener(v->{
+            mGetContent.launch(new String[]{"application/*"});
+        });
     }
 
+    public String getFilename(Context context, Uri uri){
+        String fileName = null;
+        if(uri.getScheme().equalsIgnoreCase("content")){
+            try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    if (nameIndex != -1) {
+                        fileName = cursor.getString(nameIndex);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (fileName == null) {
+                fileName = uri.getLastPathSegment();
+            }
+        }else if(uri.getScheme().equalsIgnoreCase("file")){
+            fileName = uri.getLastPathSegment();
+        }
+        return fileName;
+    }
 
-    //Billing Listener for previous and current purchases
+    //UI changes end
+
+//    Billing Listener for previous and current purchases
     private PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
         @Override
         public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> purchases) {
             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
-                for (Purchase purchase : purchases) {
-                    completePurchase(purchase);
-                }
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
                 Log.w(TAG, "onPurchasesUpdated: Purchase Canceled");
                 billingClient.endConnection();
@@ -249,70 +257,10 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                 if(billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK){
                     Log.i(TAG,"On Connection Status: Connection is successful");
                     purchasesHistory();
-                    getProductDetails();
                 }
             }
         });
     }
-
-
-    //Get Product details for Premium Content
-    private void getProductDetails(){
-        QueryProductDetailsParams queryProductDetailsParams = QueryProductDetailsParams.newBuilder()
-                        .setProductList(ImmutableList.of(QueryProductDetailsParams.Product.newBuilder().setProductId("com.solomonj.ipynbview.ads")
-                                .setProductType(BillingClient.ProductType.INAPP)
-                                                .build()))
-                .build();
-        billingClient.queryProductDetailsAsync(
-                queryProductDetailsParams,
-                new ProductDetailsResponseListener() {
-                    public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> productDetailsList) {
-                        if (!productDetailsList.isEmpty()) {
-                            productDetails = productDetailsList.get(0);
-                            Log.i(TAG,"onProductDetailsResponse : Products: "+productDetails.getName().toString());
-                        } else {
-                            Log.w(TAG, "onProductDetailsResponse: No products");
-                        }
-                    }
-                }
-        );
-    }
-
-
-    //Purchase Flow
-    private void makePurchase(){
-        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder().setProductDetailsParamsList(
-                ImmutableList.of(BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(productDetails).build())
-        ).build();
-
-        billingClient.launchBillingFlow(this,billingFlowParams);
-    }
-
-
-    //Complete Purchase and set the flag
-    private void completePurchase(Purchase item) {
-        purchase = item;
-        if(purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED){
-            if(!purchase.isAcknowledged()){
-                AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.getPurchaseToken()).build();
-                billingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
-                    @Override
-                    public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
-                        Log.i(TAG,"On Purchases: Purchase Complete and Acknowledged "+purchase.getProducts().toString());
-                        editSharedPref(true,"FLAG - Value set to true due to Purchase and Acknowledge Complete");
-                        adFlag = sharedPref.getBoolean("adFlag",false);
-                        Log.i(TAG,"FLAG - Purchase and Acknowledge Complete Latest Value: "+adFlag);
-                    }
-                });
-            }else{
-                Log.i(TAG,"On Purchases: Purchase Complete "+purchase.getProducts().toString());
-                editSharedPref(true,"FLAG - Value set to true due to Purchase Complete");
-                adFlag = sharedPref.getBoolean("adFlag",false);
-                Log.i(TAG,"FLAG - Purchase Complete Latest Value: "+adFlag);
-            }
-        }
-    }
-
 
     //Get Purchase History
     private void purchasesHistory(){
@@ -352,14 +300,12 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         );
     }
 
-
     //On Resume method to initialize billing Client
     @Override
     protected void onResume() {
         super.onResume();
         billingClient();
     }
-
 
     //On Stop method to close billing Client
     @Override
@@ -368,7 +314,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         billingClient.endConnection();
         Log.w(TAG,"On Connection Status: Terminated");
     }
-
 
     //shared preferences editor method
     private void editSharedPref(boolean flagValue, String message){
@@ -384,72 +329,12 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         }
     }
 
-
     //Rectangle Banner Ad
     private void requestNewBanner(){
         //Original id unit - ca-app-pub-4449150732190604/3922551687
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-    }
-
-    //Interestial ad
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        //Interestial Ad
-        //Test id unit -ca-app-pub-3940256099942544/1033173712
-        InterstitialAd.load(this, "ca-app-pub-1715775523919691/7766223033", adRequest, new InterstitialAdLoadCallback() {
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                super.onAdFailedToLoad(loadAdError);
-                Log.d(TAG, loadAdError.toString());
-                mInterstitialAd = null;
-            }
-
-            @Override
-            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                super.onAdLoaded(interstitialAd);
-                mInterstitialAd = interstitialAd;
-                Log.i(TAG, "onAdLoaded");
-                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
-                    @Override
-                    public void onAdClicked() {
-                        // Called when a click is recorded for an ad.
-                        Log.d(TAG, "Ad was clicked.");
-                    }
-
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        // Called when ad is dismissed.
-                        // Set the ad reference to null so you don't show the ad a second time.
-                        Log.d(TAG, "Ad dismissed fullscreen content.");
-                        mInterstitialAd = null;
-                        requestNewInterstitial();
-                    }
-
-                    @Override
-                    public void onAdFailedToShowFullScreenContent(AdError adError) {
-                        // Called when ad fails to show.
-                        Log.e(TAG, "Ad failed to show fullscreen content.");
-                        mInterstitialAd = null;
-                    }
-
-                    @Override
-                    public void onAdImpression() {
-                        // Called when an impression is recorded for an ad.
-                        Log.d(TAG, "Ad recorded an impression.");
-                    }
-
-                    @Override
-                    public void onAdShowedFullScreenContent() {
-                        // Called when ad is shown.
-                        Log.d(TAG, "Ad showed fullscreen content.");
-                    }
-                });
-            }
-        });
-
     }
 
 

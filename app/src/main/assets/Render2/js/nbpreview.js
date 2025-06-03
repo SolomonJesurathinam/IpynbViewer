@@ -1,11 +1,7 @@
 (function () {
     var root = this;
-    var $file_input = document.querySelector("input#file");
     var $holder = document.querySelector("#notebook-holder");
-    var $controls = document.querySelector("#controls");
-    var $error = document.querySelector("#error");
     var notebook = document.getElementById("main");
-
 
     var render_notebook = function (ipynb) {
         var notebook = root.notebook = nb.parse(ipynb);
@@ -16,30 +12,28 @@
         Prism.highlightAll();
     };
 
-    var load_file = function (file) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var parsed = JSON.parse(this.result);
+    root.largeLog = function(content, chunkSize = 4000) {
+        for (let i = 0; i < content.length; i += chunkSize) {
+            const chunk = content.substring(i, Math.min(i + chunkSize, content.length));
+            console.log(chunk);
+            }
+        }
+
+
+    let dataChunks = [];
+
+    root.addDataChunk = function(chunk){
+        dataChunks.push(chunk);
+    }
+
+    root.processData = function () {
+            let fullData = dataChunks.join('');
+            //largeLog(fullData); // Example: logging the full data
+            dataChunks = []; // Clear the chunks array
+            var parsed = JSON.parse(fullData);
             render_notebook(parsed);
-        };
-        reader.readAsText(file);
-    };
-
-    $file_input.onchange = function (e) {
-				if(this.files[0].name.endsWith('.ipynb')){
-					load_file(this.files[0]);
-					$controls.hidden=true;
-					$error.textContent="";
-					notebook.style.display = "block";
-					$holder.style.fontSize = ".5em";
-				}else{
-					console.log("Invalid file");
-					$error.textContent = "Please upload correct ipynb format file";
-					$error.align = "center";
-					$error.style.fontSize = "3.5em";
-					$error.style.color = "red";
-						 }
-
-    };
+            notebook.style.display = "block";
+            $holder.style.fontSize = ".5em";
+        }
 
 }).call(this);
