@@ -8,9 +8,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
+
 import java.util.List;
 
-public class SplashScreen extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     private static final int SPLASH_SCREEN_TIME_OUT = 2000;
     private static final int SPLASH_DISPLAY_LENGTH = 1500;
@@ -19,6 +21,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SplashScreen.installSplashScreen(this);
         setContentView(R.layout.activity_splash_screen);
 
         splashScreenLogic();

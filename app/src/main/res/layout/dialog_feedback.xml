@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:background="@color/widgetsPrimary">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,16 +19,16 @@
             android:layout_height="wrap_content"
             style = "@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:hint="Name"
-            android:textColorHint="@color/black"
-            app:boxStrokeColor="@color/widgets"
-            app:hintTextColor="@color/widgets"
+            android:textColorHint="@color/widgetsText"
+            app:boxStrokeColor="@color/text_input_stroke_color"
+            app:hintTextColor="@color/accentCustom"
             android:textSize="12sp"
             android:fontFamily="@font/roboto_condensed_regular">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/widgetsText"
                 android:singleLine="true"
                 android:textSize="12sp"
                 android:fontFamily="@font/roboto_condensed_regular"/>
@@ -40,16 +41,16 @@
             android:layout_height="wrap_content"
             style = "@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:hint="Feedback"
-            android:textColorHint="@color/black"
-            app:boxStrokeColor="@color/widgets"
-            app:hintTextColor="@color/widgets"
+            android:textColorHint="@color/widgetsText"
+            app:boxStrokeColor="@color/text_input_stroke_color"
+            app:hintTextColor="@color/accentCustom"
             android:textSize="12sp"
             android:fontFamily="@font/roboto_condensed_regular">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/widgetsText"
                 android:singleLine="true"
                 android:textSize="12sp"
                 android:fontFamily="@font/roboto_condensed_regular"/>
@@ -63,10 +64,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:textSize="12sp"
-            android:backgroundTint="@color/widgets"
+            android:backgroundTint="@color/accentCustom"
             android:fontFamily="@font/roboto_condensed_regular"
             android:text="Send Feedback"
-            android:textColor="@color/widgetsText" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
@@ -76,5 +77,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:indeterminateTint="@color/accentCustom"/>
 </FrameLayout>

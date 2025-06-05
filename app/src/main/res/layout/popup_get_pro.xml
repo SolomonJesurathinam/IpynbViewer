@@ -28,7 +28,7 @@
                 android:layout_marginBottom="10dp"
                 android:text="Get IPYNB Viewer Pro! 🌟"
                 android:fontFamily="@font/roboto_condensed_regular"
-                android:textColor="@color/black"
+                android:textColor="@color/widgetsText"
                 android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:text="- Ad-Free Experience\n- Offline Rendering\n- Display all ipynb files in app\n\- View/Share converted PDF's\n- Bug Fixes and Performance Updates"
                 android:layout_marginTop="8dp"
-                android:textColor="@color/black"
+                android:textColor="@color/widgetsText"
                 android:layout_centerHorizontal="true"
                 android:fontFamily="@font/roboto_condensed_regular"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
@@ -54,9 +54,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_condensed_regular"
-                    android:backgroundTint="@color/widgets"
+                    android:backgroundTint="@color/accentCustom"
                     android:layout_alignParentRight="true"
-                    android:textColor="@color/widgetsText"
+                    android:textColor="@color/white"
                     app:backgroundTint="@null"
                     android:text="✨ Upgrade to Pro ✨"
                     android:textSize="12sp"
@@ -72,10 +72,10 @@
                     android:text="Not Now"
                     android:textSize="12sp"
                     android:fontFamily="@font/roboto_condensed_regular"
-                    android:textColor="@color/black"
+                    android:textColor="@color/widgetsText"
                     android:textStyle="bold"
                     app:rippleColor="#66A65E2E"
-                    app:strokeColor="@color/widgets"/>
+                    app:strokeColor="@color/accentCustom"/>
 
 
             </RelativeLayout>

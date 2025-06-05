@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorText">#FFFFFFFF</color>
+    <color name="accentCustom">#A65E2E</color>
+    <color name="primaryColor">#010B14</color>
+    <color name="widgetsPrimary">#121D23</color>
+    <color name="widgetsText">#E8EAE9</color>
+    <color name="widgetsReverse">#F5F5F5</color>
+    <color name="widgetsTextReverse">#010B14</color>
 
+<!--    <color name="accentCustom">#20C2D1</color>-->
 
-<!--    new colors-->
-    <color name="widgets">#A65E2E</color>
-    <color name="widgetsText">#FFFFFF</color>
 </resources>

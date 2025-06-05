@@ -22,8 +22,10 @@ import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -41,6 +43,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 import com.blankj.utilcode.util.PathUtils;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
@@ -64,11 +72,20 @@ public class Webview extends AppCompatActivity {
     private ProgressBar progressBar;
     Toolbar toolbar;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    private boolean isToolbarVisible = true;
+    private GestureDetector mGestureDetector;
+    private AdView viewPageAd;
+    SharedPreferences sharedPref;
+    public static final String MyPRE = "adFlagger" ;
+    boolean adFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
+
+        sharedPref = getSharedPreferences(MyPRE, Context.MODE_PRIVATE);
+        adFlag = sharedPref.getBoolean("adFlag",false);
 
         //Shared Preferences
         webPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -86,6 +103,36 @@ public class Webview extends AppCompatActivity {
         displayProgressBar();
         extractDataAndDisplay();
         backPressedLogic();
+
+        //hide or show toolbar
+        webView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (isToolbarVisible) {
+                hideToolbar();
+            }
+        });
+
+        mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                // Show your toolbar
+                toolbar.animate().translationY(0).setDuration(200);
+                isToolbarVisible = true;
+                return true;
+            }
+        });
+
+        loadBannerAd();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent e) {
+        mGestureDetector.onTouchEvent(e);
+        return super.dispatchTouchEvent(e); // allow WebView to scroll & interact
+    }
+
+    private void hideToolbar() {
+        toolbar.animate().translationY(-toolbar.getHeight()).setDuration(200);
+        isToolbarVisible = false;
     }
 
     public void displayProgressBar(){
@@ -525,6 +572,28 @@ public class Webview extends AppCompatActivity {
         } else {
             webView.setInitialScale(100);
             webView.getSettings().setUseWideViewPort(false);
+        }
+    }
+
+    private void loadBannerAd(){
+        Log.e("Adflag",String.valueOf(adFlag));
+        if(!adFlag){
+            MobileAds.initialize(this, initializationStatus -> {});
+            viewPageAd = findViewById(R.id.viewPageAd);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            viewPageAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    viewPageAd.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    super.onAdFailedToLoad(loadAdError);
+                }
+            });
+
+            viewPageAd.loadAd(adRequest);
         }
     }
 }

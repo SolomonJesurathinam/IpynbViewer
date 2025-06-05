@@ -3,6 +3,7 @@ package com.solomonj.ipynbviewer;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,14 +16,12 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class StreamlitActivity extends AppCompatActivity {
 
@@ -36,8 +35,15 @@ public class StreamlitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_streamlit);
 
-        String url = "https://nbtopdf.streamlit.app/";
-//        String url = "https://ipynbconverter.streamlit.app/";
+        List<String> urls = Arrays.asList(
+                "https://ipynbconverter.streamlit.app/",
+                "https://nbtopdf-copy.streamlit.app/"
+        );
+
+
+        boolean dark = (getApplicationContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+        Random random = new Random();
+        String url = dark ? urls.get(random.nextInt(urls.size())) : "https://nbtopdf.streamlit.app/";
 
         progressBar = findViewById(R.id.progressBar);
         webView = (WebView) findViewById(R.id.webview);

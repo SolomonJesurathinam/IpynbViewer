@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Webview">
+    tools:context=".Webview"
+    android:background="@color/primaryColor">
 
     <WebView
         android:id="@+id/webView"
@@ -16,12 +17,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:indeterminate="true" />
+        android:indeterminate="true"
+        android:indeterminateTint="@color/accentCustom"/>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </androidx.appcompat.widget.Toolbar>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/viewPageAd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:adSize="BANNER"
+        android:visibility="visible"
+        tools:visility="visible"
+        android:layout_gravity="bottom"
+        app:adUnitId="ca-app-pub-3940256099942544/9214589741"/>
+    <!--  dummy -->
 
 </FrameLayout>
