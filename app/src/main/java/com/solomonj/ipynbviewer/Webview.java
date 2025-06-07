@@ -32,6 +32,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
@@ -70,14 +71,15 @@ public class Webview extends AppCompatActivity {
     WebView webView;
     SharedPreferences webPref;
     private ProgressBar progressBar;
-    Toolbar toolbar;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
-    private boolean isToolbarVisible = true;
     private GestureDetector mGestureDetector;
     private AdView viewPageAd;
     SharedPreferences sharedPref;
     public static final String MyPRE = "adFlagger" ;
     boolean adFlag;
+    LinearLayout pdfDownload,printPDF,darkmode,viewOverlay;
+    boolean isDarkMode = false;
+    private boolean isOverlayVisible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,13 +93,8 @@ public class Webview extends AppCompatActivity {
         webPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         //Locators
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progressBar);
         webView = (WebView) findViewById(R.id.webView);
-
-        //Toolbar function
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //Functions
         displayProgressBar();
@@ -106,33 +103,138 @@ public class Webview extends AppCompatActivity {
 
         //hide or show toolbar
         webView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (isToolbarVisible) {
-                hideToolbar();
+            if (isOverlayVisible) {
+                hidefootBar();
             }
         });
 
         mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-                // Show your toolbar
-                toolbar.animate().translationY(0).setDuration(200);
-                isToolbarVisible = true;
+                toggleOverlayVisibility();
                 return true;
             }
         });
 
         loadBannerAd();
+
+        pdfDownload = findViewById(R.id.pdfDownload);
+        printPDF = findViewById(R.id.printPDF);
+        darkmode = findViewById(R.id.Darkmode);
+        viewOverlay = findViewById(R.id.viewOverlay);
+
+        pdfDownload.setOnClickListener(v->{
+            if(Build.VERSION.SDK_INT<29){
+                if(ContextCompat.checkSelfPermission(Webview.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(Webview.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                }else{
+                    downloadSteps();
+                }
+            }else {
+                downloadSteps();
+            }
+        });
+
+        printPDF.setOnClickListener(v->{
+            Uri uri = Uri.parse(getIntent().getStringExtra("filePath"));
+            if(uri != null){
+                String fname = getFilename(getApplicationContext(),uri);
+                if(fname.endsWith(".ipynb")){
+                    fname = fname.replace(".ipynb","");
+                    createWebPrintJob(webView,Webview.this,fname);
+                }
+            }else{
+                Toast.makeText(this, "Nothing to save, please re-select file", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        darkmode.setOnClickListener(v->{
+            if(isDarkMode){
+                removeDarkmode();
+            }else{
+                setDarkmodeMode();
+            }
+
+        });
+    }
+
+    private void removeDarkmode(){
+        String disableDarkMode = "(function() {" +
+                "let style = document.getElementById('dark-mode-style');" +
+                "if (style) style.remove();" +
+                "})();";
+        webView.evaluateJavascript(disableDarkMode, null);
+        isDarkMode = false;
+    }
+
+    private void setDarkmodeMode(){
+        String darkModeCss = "(function() {" +
+                "let style = document.getElementById('dark-mode-style');" +
+                "if (!style) {" +
+                "style = document.createElement('style');" +
+                "style.id = 'dark-mode-style';" +
+                "style.innerHTML = `" +
+
+                "html, body {" +
+                "  background-color: #121212 !important;" +
+                "  color: #e0e0e0 !important;" +
+                "}" +
+
+                "div, span, td, th, pre, code, .output_area, .input_area, .cell, .output, .output_subarea {" +
+                "  background-color: #1e1e1e !important;" +
+                "  color: #e0e0e0 !important;" +
+                "}" +
+
+                "a { color: #8ab4f8 !important; }" +
+                "img, svg { filter: invert(1) hue-rotate(180deg); }" +
+
+                "table { background-color: #1f1f1f !important; color: #e0e0e0 !important; }" +
+                "tr, td, th { border-color: #444 !important; }" +
+
+                "`;" +
+                "document.head.appendChild(style);" +
+                "}" +
+                "})();";
+
+        webView.evaluateJavascript(darkModeCss, null);
+        isDarkMode = true;
+    }
+
+    private void toggleOverlayVisibility() {
+        runOnUiThread(()->{
+            if (isOverlayVisible) {
+                viewOverlay.animate().alpha(0f).setDuration(200).withEndAction(() -> viewOverlay.setVisibility(View.GONE));
+                isOverlayVisible = false;
+            } else {
+                viewOverlay.setVisibility(View.VISIBLE);
+                viewOverlay.animate().alpha(1f).setDuration(200);
+                isOverlayVisible = true;
+            }
+        });
+    }
+
+    private boolean isTouchInsideView(MotionEvent event, View view) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        float x = event.getRawX();
+        float y = event.getRawY();
+        return x >= location[0] && x <= (location[0] + view.getWidth()) &&
+                y >= location[1] && y <= (location[1] + view.getHeight());
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent e) {
-        mGestureDetector.onTouchEvent(e);
+//        mGestureDetector.onTouchEvent(e);
+        if (isTouchInsideView(e, webView) && !isTouchInsideView(e, viewOverlay)) {
+            mGestureDetector.onTouchEvent(e);
+        }
         return super.dispatchTouchEvent(e); // allow WebView to scroll & interact
+
     }
 
-    private void hideToolbar() {
-        toolbar.animate().translationY(-toolbar.getHeight()).setDuration(200);
-        isToolbarVisible = false;
+    private void hidefootBar() {
+        viewOverlay.animate().alpha(0f).setDuration(200).withEndAction(() -> viewOverlay.setVisibility(View.GONE));
+        isOverlayVisible = false;
     }
 
     public void displayProgressBar(){
@@ -192,7 +294,7 @@ public class Webview extends AppCompatActivity {
         webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT); //fix for render1 loading time
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setDisplayZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
         if(getApplication().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             webView.setInitialScale(100);
             webView.getSettings().setUseWideViewPort(false);
@@ -264,44 +366,6 @@ public class Webview extends AppCompatActivity {
         super.onDestroy();
     }
 
-    //Options for menu list (Download and Print)
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_webview, menu);
-        return true;
-    }
-
-    //On click on DDownload and Print
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_download) {
-            if(Build.VERSION.SDK_INT<29){
-                if(ContextCompat.checkSelfPermission(Webview.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(Webview.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-                }else{
-                    downloadSteps();
-                }
-            }else {
-                downloadSteps();
-            }
-            return true;
-        } else if (id == R.id.action_print) {
-            Uri uri = Uri.parse(getIntent().getStringExtra("filePath"));
-            if(uri != null){
-                String fname = getFilename(getApplicationContext(),uri);
-                if(fname.endsWith(".ipynb")){
-                    fname = fname.replace(".ipynb","");
-                    createWebPrintJob(webView,Webview.this,fname);
-                    return true;
-                }
-            }else{
-                Toast.makeText(this, "Nothing to save, please re-select file", Toast.LENGTH_LONG).show();
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     public void downloadSteps(){
         Uri uri = Uri.parse(getIntent().getStringExtra("filePath"));
@@ -504,13 +568,12 @@ public class Webview extends AppCompatActivity {
             public void run() {
                 if(status.equalsIgnoreCase("Visible")){
                     progressBar.setVisibility(View.VISIBLE);
-                    findViewById(R.id.action_download).setEnabled(false);
-                    findViewById(R.id.action_print).setEnabled(false);
-
+                    pdfDownload.setEnabled(false);
+                    printPDF.setEnabled(false);
                 }else if(status.equalsIgnoreCase("Gone")){
                     progressBar.setVisibility(View.GONE);
-                    findViewById(R.id.action_download).setEnabled(true);
-                    findViewById(R.id.action_print).setEnabled(true);
+                    pdfDownload.setEnabled(true);
+                    printPDF.setEnabled(true);
                 }
 
             }

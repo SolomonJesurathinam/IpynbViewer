@@ -20,21 +20,123 @@
         android:indeterminate="true"
         android:indeterminateTint="@color/accentCustom"/>
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </androidx.appcompat.widget.Toolbar>
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/viewPageAd"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:adSize="BANNER"
-        android:visibility="visible"
-        tools:visility="visible"
-        android:layout_gravity="bottom"
-        app:adUnitId="ca-app-pub-3940256099942544/9214589741"/>
-    <!--  dummy -->
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
+
+        <LinearLayout
+            android:id="@+id/viewOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#2A2D34"
+            android:visibility="visible"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:id="@+id/pdfDownload"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:id="@+id/pageButton"
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+
+                    android:padding="0dp"
+                    android:backgroundTint="@color/transparent"
+                    android:src="@drawable/download"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PDF"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/printPDF"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:id="@+id/scrollModeButton"
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:src="@drawable/print"
+                    android:backgroundTint="@color/transparent"
+                    android:padding="0dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Print"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Darkmode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:id="@+id/shareButton"
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:src="@drawable/dark"
+                    app:tint="@color/white"
+                    android:backgroundTint="@color/transparent"
+                    android:padding="0dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dark"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:gravity="center" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/viewPageAd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:adSize="BANNER"
+            android:visibility="gone"
+            tools:visility="visible"
+            android:layout_gravity="bottom"
+            app:adUnitId="ca-app-pub-3940256099942544/9214589741"/>
+        <!--  dummy -->
+
+    </LinearLayout>
+
+
 
 </FrameLayout>
