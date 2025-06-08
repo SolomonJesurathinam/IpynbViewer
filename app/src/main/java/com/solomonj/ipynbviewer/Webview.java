@@ -35,6 +35,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -80,11 +82,15 @@ public class Webview extends AppCompatActivity {
     LinearLayout pdfDownload,printPDF,darkmode,viewOverlay;
     boolean isDarkMode = false;
     private boolean isOverlayVisible = true;
+    Utilities utilities = new Utilities();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_webview);
+
+        utilities.setupEdgeToEdgeWithConditionalPadding(this, findViewById(R.id.webviewRoot), true, true, true, true);
 
         sharedPref = getSharedPreferences(MyPRE, Context.MODE_PRIVATE);
         adFlag = sharedPref.getBoolean("adFlag",false);
@@ -304,9 +310,15 @@ public class Webview extends AppCompatActivity {
         }
         webView.addJavascriptInterface(new WebAppInterface(this), "AndroidMessage");
         webView.setWebViewClient(new WebViewClient() {
+
             public void onPageFinished(WebView view, String url) {
                 // Call JavaScript function here
                 sendDataToWebView(webView,data);
+            }
+
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                //view.loadUrl(url);
+                return true;
             }
         });
 

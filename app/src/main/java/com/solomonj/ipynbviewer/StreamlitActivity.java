@@ -16,6 +16,8 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,11 +31,15 @@ public class StreamlitActivity extends AppCompatActivity {
     private ValueCallback<Uri[]> uploadMessage;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private ProgressBar progressBar;
+    Utilities utilities = new Utilities();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_streamlit);
+
+        utilities.setupEdgeToEdgeWithConditionalPadding(this, findViewById(R.id.streamlitRoot), true, true, true, true);
 
         List<String> urls = Arrays.asList(
                 "https://ipynbconverter.streamlit.app/",

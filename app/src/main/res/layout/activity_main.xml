@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="15dp"
             android:fontFamily="@font/rubik_mono_one"
             android:text="IPYNB VIEWER"
@@ -139,9 +139,10 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="16dp"
             app:adSize="MEDIUM_RECTANGLE"
-            app:adUnitId="ca-app-pub-3940256099942544/9214589741"/>
+            app:adUnitId="ca-app-pub-1715775523919691/3323866400"/>
 
-<!--  ORIGINAL      ca-app-pub-1715775523919691/3323866400-->
+<!--  DUMMY      ca-app-pub-3940256099942544/9214589741 -->
+
 
     </LinearLayout>
 

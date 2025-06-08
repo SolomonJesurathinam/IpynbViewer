@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
 import com.google.android.gms.ads.AdRequest;
@@ -28,12 +30,16 @@ public class SplashActivity extends AppCompatActivity {
     boolean adFlag;
     SharedPreferences sharedPref;
     public static final String MyPRE = "adFlagger" ;
+    Utilities utilities = new Utilities();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SplashScreen.installSplashScreen(this);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash_screen);
+
+        utilities.setupEdgeToEdgeWithConditionalPadding(this, findViewById(R.id.splashRoot), true, true, true, true);
 
         sharedPref = getSharedPreferences(MyPRE, Context.MODE_PRIVATE);
         adFlag = sharedPref.getBoolean("adFlag",false);
@@ -99,8 +105,8 @@ public class SplashActivity extends AppCompatActivity {
 
     private void loadInterstitialAd(){
         AdRequest adRequest = new AdRequest.Builder().build();
-        //ORIGINAL - ca-app-pub-1715775523919691/7766223033
-        InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest, new InterstitialAdLoadCallback() {
+        //DUMMY - ca-app-pub-3940256099942544/1033173712
+        InterstitialAd.load(this, "ca-app-pub-1715775523919691/7766223033", adRequest, new InterstitialAdLoadCallback() {
             @Override
             public void onAdLoaded(InterstitialAd interstitialAd) {
                 mInterstitialAd = interstitialAd;

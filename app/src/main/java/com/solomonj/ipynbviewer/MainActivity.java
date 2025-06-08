@@ -1,11 +1,17 @@
 package com.solomonj.ipynbviewer;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.PreferenceManager;
+
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -21,9 +27,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -32,7 +38,6 @@ import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
@@ -60,12 +65,16 @@ public class MainActivity extends AppCompatActivity {
     RadioGroup radioRender;
     Button choosefile, convertOnline;
     private ActivityResultLauncher<String[]> mGetContent;
+    Utilities utilities = new Utilities();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        utilities.setupEdgeToEdgeWithConditionalPadding(this, findViewById(R.id.homePage),true,true,true,false);
 
         sharedPref = getSharedPreferences(MyPRE, Context.MODE_PRIVATE);
         adFlag = sharedPref.getBoolean("adFlag",false);
@@ -364,5 +373,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 }

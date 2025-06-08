@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Webview"
+    android:id="@+id/webviewRoot"
     android:background="@color/primaryColor">
 
     <WebView
@@ -132,8 +133,8 @@
             android:visibility="gone"
             tools:visility="visible"
             android:layout_gravity="bottom"
-            app:adUnitId="ca-app-pub-3940256099942544/9214589741"/>
-        <!--  ORIGINAL - ca-app-pub-1715775523919691/3988346851 -->
+            app:adUnitId="ca-app-pub-1715775523919691/3988346851"/>
+        <!--  DUMMY - ca-app-pub-3940256099942544/9214589741 -->
 
     </LinearLayout>
 

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SplashActivity"
+    android:id="@+id/splashRoot"
     android:background="@color/primaryColor">
 
     <com.airbnb.lottie.LottieAnimationView
@@ -16,5 +17,37 @@
         app:lottie_autoPlay="true"
         app:lottie_fileName="titleanimation.lottie"
         app:lottie_loop="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:indeterminate="true"
+            android:layout_marginBottom="10dp"
+            android:progressDrawable="@android:color/white"/>
+
+        <TextView
+            android:id="@+id/textAdNotice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This action contains ads..."
+            android:textColor="@color/widgetsText"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+
 
 </RelativeLayout>

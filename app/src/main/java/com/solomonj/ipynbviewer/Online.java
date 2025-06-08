@@ -30,11 +30,15 @@ public class Online extends AppCompatActivity {
     TextView txtViewdown, txtPrivacy, txtTempStorage, txtBeta;
     Button btnTryItNow, btnSendFeedback;
     ProgressBar progressBar;
+    Utilities utilities = new Utilities();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_online);
+
+        utilities.setupEdgeToEdgeWithConditionalPadding(this, findViewById(R.id.onlineroot),true,true,true,true);
 
         //Locators
         txtViewdown = findViewById(R.id.txtViewdown);
