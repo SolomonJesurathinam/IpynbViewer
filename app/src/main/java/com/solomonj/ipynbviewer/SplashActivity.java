@@ -99,7 +99,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void loadInterstitialAd(){
         AdRequest adRequest = new AdRequest.Builder().build();
-        //dummy - ca-app-pub-3940256099942544/1033173712
+        //ORIGINAL - ca-app-pub-1715775523919691/7766223033
         InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest, new InterstitialAdLoadCallback() {
             @Override
             public void onAdLoaded(InterstitialAd interstitialAd) {

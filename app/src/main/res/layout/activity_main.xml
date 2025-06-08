@@ -139,7 +139,9 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="16dp"
             app:adSize="MEDIUM_RECTANGLE"
-            app:adUnitId="ca-app-pub-1715775523919691/3323866400"/>
+            app:adUnitId="ca-app-pub-3940256099942544/9214589741"/>
+
+<!--  ORIGINAL      ca-app-pub-1715775523919691/3323866400-->
 
     </LinearLayout>
 
