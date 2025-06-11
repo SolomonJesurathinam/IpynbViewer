@@ -189,6 +189,11 @@ public class Webview extends AppCompatActivity {
                 "div, span, td, th, pre, code, .output_area, .input_area, .cell, .output, .output_subarea {" +
                 "  background-color: #1e1e1e !important;" +
                 "  color: #e0e0e0 !important;" +
+                "  text-shadow: none !important;" +
+                "}" +
+
+                "code[class*=language-], pre[class*=language-] {" +
+                "  text-shadow: none !important;" +   // 👈 Also added this specific override
                 "}" +
 
                 "a { color: #8ab4f8 !important; }" +

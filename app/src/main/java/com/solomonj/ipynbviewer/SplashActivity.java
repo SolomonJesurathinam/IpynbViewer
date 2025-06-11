@@ -23,7 +23,7 @@ import java.util.List;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final int SPLASH_SCREEN_TIME_OUT = 5000;
+    private static final int SPLASH_SCREEN_TIME_OUT = 3000;
     private Handler handler = new Handler(Looper.getMainLooper());
     private InterstitialAd mInterstitialAd;
     private boolean isAdLoaded = false;
