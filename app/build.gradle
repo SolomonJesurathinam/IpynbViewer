@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace 'com.solomonj.ipynbviewer'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.solomonj.ipynbviewer"
         minSdk 28
-        targetSdk 35
+        targetSdk 36
         versionCode 10
         versionName "1.8"
 
@@ -37,18 +37,17 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.activity:activity:1.10.1'
-    implementation 'androidx.navigation:navigation-fragment:2.9.0'
-    implementation 'androidx.navigation:navigation-ui:2.9.0'
+    implementation 'androidx.navigation:navigation-fragment:2.9.3'
+    implementation 'androidx.navigation:navigation-ui:2.9.3'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-    implementation "androidx.browser:browser:1.8.0"
+    androidTestImplementation 'androidx.test.ext:junit:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+    implementation "androidx.browser:browser:1.9.0"
     implementation 'com.blankj:utilcodex:1.31.1'
-    def billing_version = "6.1.0"
-    implementation "com.android.billingclient:billing:$billing_version"
-    implementation 'com.google.guava:guava:31.1-android'
-    implementation 'com.google.android.gms:play-services-ads:24.3.0'
-    implementation "com.airbnb.android:lottie:6.6.0"
+    implementation "com.android.billingclient:billing:8.0.0"
+    implementation 'com.google.guava:guava:33.4.8-android'
+    implementation 'com.google.android.gms:play-services-ads:24.5.0'
+    implementation "com.airbnb.android:lottie:6.6.7"
 
 //    new
     implementation 'androidx.preference:preference:1.2.1'
