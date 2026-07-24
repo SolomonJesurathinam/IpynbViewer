@@ -43,4 +43,5 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="universal_app_promo_desc">Thank you for using Ipynb Viewer! To bring you new features like <b>offline editing</b>, <b>cell hiding</b>, <b>multi-file support</b>, and 3x faster performance, I\'ve built <b>Universal App</b>. It is completely free and packed with new functionalities. I\'d love for you to try it!</string>
 </resources>

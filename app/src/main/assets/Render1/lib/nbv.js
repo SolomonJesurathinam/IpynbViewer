@@ -112,7 +112,11 @@ const nbv_constructor = (function(document, deps) {
         var el = d.createElement('div'); // container for it all
         el.style.position = 'relative'; // for excount positioning
 
-        el.appendChild(excount(cell, true));
+        // Wrap 'In [N]:' label + code block together so visibility toggle hides both
+        var inputWrapper = d.createElement('div');
+        inputWrapper.classList.add('nb-input');
+        inputWrapper.style.position = 'relative'; // keeps excount absolute-position working
+        inputWrapper.appendChild(excount(cell, true));
 
         var pre = d.createElement('pre');
         // because code may also be within markdown:
@@ -136,11 +140,14 @@ const nbv_constructor = (function(document, deps) {
         code.textContent = handle_multiline_strings(raw_source);
 
         pre.appendChild(code);
-        el.appendChild(pre);
+        inputWrapper.appendChild(pre);
+        el.appendChild(inputWrapper);
+
         deps.prism.highlightElement(code);
 
-        // outputs now
+        // outputs now — nb-output wraps every output dm (each already has Out[N] inside)
         var outp = d.createElement('div');
+        outp.classList.add('nb-output');
         outp.style.margin = '1em 0 .5em 0';
 
         for (var j=0; j < cell.outputs.length; j++) {
@@ -190,7 +197,7 @@ const nbv_constructor = (function(document, deps) {
         // taken from https://github.com/jupyter/nbconvert/blob/master/nbconvert/utils/base.py
         // var format_priority = ['text/html', 'application/pdf', 'text/latex', 'image/svg+xml', 'image/png', 'image/jpeg', 'text/markdown', 'text/plain'];
         // filtering only those that are currently supported (excluding pdf, latex, markdown)
-        var format_priority = ['text/html', 'image/svg+xml', 'image/png', 'image/jpeg', 'text/plain'];
+        var format_priority = ['application/vnd.plotly.v1+json', 'text/html', 'image/svg+xml', 'image/png', 'image/jpeg', 'text/plain'];
 
         var fmt = null;
         for (var tfmt of format_priority) {
@@ -209,6 +216,34 @@ const nbv_constructor = (function(document, deps) {
         var dm = d.createElement('div');
         var source = handle_multiline_strings(dt.data[fmt]);
         switch (fmt) {
+            case 'application/vnd.plotly.v1+json':
+                var plotlyData = dt.data[fmt];
+                if (typeof plotlyData === 'string') {
+                    try {
+                        plotlyData = JSON.parse(plotlyData);
+                    } catch (e) {
+                        console.error('Failed to parse Plotly data string', e);
+                    }
+                }
+                var chartDiv = d.createElement('div');
+                chartDiv.classList.add('plotly-chart');
+                chartDiv.style.width = '100%';
+                chartDiv.style.maxWidth = '100%';
+                if (window.Plotly) {
+                    setTimeout(function() {
+                        try {
+                            window.Plotly.newPlot(chartDiv, plotlyData.data, plotlyData.layout, plotlyData.config);
+                        } catch (err) {
+                            console.error('Plotly rendering error', err);
+                        }
+                    }, 0);
+                } else {
+                    chartDiv.textContent = "Plotly library not loaded";
+                    console.error("Plotly is not loaded on window");
+                }
+                dm = chartDiv;
+                break;
+
             case 'text/plain':
                 dm = d.createElement('pre');
                 dm.style.margin = 0;

@@ -60,13 +60,18 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences homePagePref;
     boolean adFlag;
     private AdView mAdView;
-    Button getPro;
+    View getPro;
 
     //new ui changes
     RadioGroup radioRender;
     Button choosefile, convertOnline;
     private ActivityResultLauncher<String[]> mGetContent;
     Utilities utilities = new Utilities();
+
+    // Universal Reader Promotion Views
+    private View universalReaderBanner;
+    private Button btnUniversalReaderSmall;
+    private static final String PREF_BANNER_DISMISSED = "universal_reader_banner_dismissed";
 
 
     @Override
@@ -147,6 +152,64 @@ public class MainActivity extends AppCompatActivity {
         convertOnline.setOnClickListener(v->{
             Intent intent = new Intent(getApplicationContext(),Online.class);
             startActivity(intent);
+        });
+
+        // Universal Reader Promotion Logic
+        universalReaderBanner = findViewById(R.id.universalReaderBanner);
+        btnUniversalReaderSmall = findViewById(R.id.btnUniversalReaderSmall);
+        View closeBanner = findViewById(R.id.closeBanner);
+        Button btnInstallUniversalReader = findViewById(R.id.btnInstallUniversalReader);
+
+        boolean isBannerDismissed = sharedPref.getBoolean(PREF_BANNER_DISMISSED, false);
+        if (isBannerDismissed) {
+            universalReaderBanner.setVisibility(View.GONE);
+            btnUniversalReaderSmall.setVisibility(View.VISIBLE);
+        } else {
+            universalReaderBanner.setVisibility(View.VISIBLE);
+            btnUniversalReaderSmall.setVisibility(View.GONE);
+        }
+
+        View.OnClickListener launchPlayStore = v -> {
+            Intent goToMarket = new Intent(Intent.ACTION_VIEW)
+                    .setData(Uri.parse("market://details?id=com.solomonj.universalreader"));
+            try {
+                startActivity(goToMarket);
+            } catch (ActivityNotFoundException e) {
+                try {
+                    Intent goToWeb = new Intent(Intent.ACTION_VIEW)
+                            .setData(Uri.parse("https://play.google.com/store/apps/details?id=com.solomonj.universalreader"));
+                    startActivity(goToWeb);
+                } catch (Exception ex) {
+                    Toast.makeText(getApplicationContext(), "Unable to open Google Play Store", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        btnInstallUniversalReader.setOnClickListener(launchPlayStore);
+        btnUniversalReaderSmall.setOnClickListener(launchPlayStore);
+
+        closeBanner.setOnClickListener(v -> {
+            // Animate banner fading out
+            universalReaderBanner.animate()
+                    .alpha(0f)
+                    .setDuration(300)
+                    .withEndAction(() -> {
+                        universalReaderBanner.setVisibility(View.GONE);
+                        // Show small button and animate alpha from 0 to 1
+                        btnUniversalReaderSmall.setAlpha(0f);
+                        btnUniversalReaderSmall.setVisibility(View.VISIBLE);
+                        btnUniversalReaderSmall.animate()
+                                .alpha(1f)
+                                .setDuration(300)
+                                .start();
+                    })
+                    .start();
+
+            // Save dismissed state in SharedPreferences
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(PREF_BANNER_DISMISSED, true);
+            editor.apply();
+            editor.commit();
         });
 
     }

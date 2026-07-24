@@ -14,17 +14,34 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="15dp"
-            android:fontFamily="@font/rubik_mono_one"
-            android:text="IPYNB VIEWER"
-            android:textSize="20sp"
-            android:textColor="@color/widgetsText"/>
+            android:layout_marginBottom="15dp">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/rubik_mono_one"
+                android:text="IPYNB VIEWER"
+                android:textSize="20sp"
+                android:textColor="@color/widgetsText"/>
+
+            <ImageButton
+                android:id="@+id/getPro"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/pro"
+                android:contentDescription="Get Pro"
+                android:padding="8dp"/>
+        </RelativeLayout>
 
         <com.airbnb.lottie.LottieAnimationView
             android:layout_width="150dp"
@@ -115,22 +132,88 @@
             </RadioGroup>
 
             <Button
-                android:id="@+id/getPro"
+                android:id="@+id/btnUniversalReaderSmall"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:strokeColor="@color/accentCustom"
                 android:textSize="12sp"
-                android:drawableRight="@drawable/pro"
-                app:iconTint="@color/accentCustom"
                 android:fontFamily="@font/roboto_condensed_regular"
-                android:text="GET PRO"
+                android:text="TRY UNIVERSAL APP"
                 android:layout_alignParentRight="true"
                 android:textColor="@color/widgetsText"
                 android:textStyle="bold"
-                app:rippleColor="#66A65E2E"/>
+                app:rippleColor="#66A65E2E"
+                android:visibility="gone"/>
 
         </RelativeLayout>
+
+        <!-- Universal Reader Promotion Banner -->
+        <LinearLayout
+            android:id="@+id/universalReaderBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/closeBanner"
+                    android:text="Try Universal App 🚀"
+                    android:fontFamily="@font/roboto_condensed_regular"
+                    android:textColor="@color/widgetsText"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+                <ImageButton
+                    android:id="@+id/closeBanner"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/widgetsText"
+                    android:contentDescription="Close Banner"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/universal_app_promo_desc"
+                android:textColor="@color/widgetsText"
+                android:fontFamily="@font/roboto_condensed_regular"
+                android:textSize="13sp"
+                android:alpha="0.8"/>
+
+            <Button
+                android:id="@+id/btnInstallUniversalReader"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="@color/accentCustom"
+                android:fontFamily="@font/roboto_condensed_regular"
+                android:text="INSTALL FREE"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"

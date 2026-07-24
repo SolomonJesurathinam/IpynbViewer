@@ -12,6 +12,7 @@
     <script src="js/vendor/katex.min.js"></script>
     <script src="js/vendor/katex-auto-render.min.js"></script>
     <script src="js/vendor/notebook.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="css/vendor/katex.min.css" />
     <link rel="stylesheet" href="css/vendor/prism.css" />
     <link rel="stylesheet" href="css/notebook.css" />
@@ -29,7 +30,30 @@
 					text-align: left;
 					min-height: 100vh;
 						}
-
+        @media print {
+            @page {
+                margin: 5mm !important;
+            }
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+            #main {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important;
+                background: transparent !important;
+            }
+            div#notebook-holder {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        }
         </style>
 </head>
 <body>

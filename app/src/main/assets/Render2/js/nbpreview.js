@@ -3,6 +3,35 @@
     var $holder = document.querySelector("#notebook-holder");
     var notebook = document.getElementById("main");
 
+    // Extend nb for Plotly support
+    if (root.nb) {
+        root.nb.display["application/vnd.plotly.v1+json"] = function(plotlyData) {
+            var chartDiv = document.createElement('div');
+            chartDiv.classList.add('plotly-chart');
+            chartDiv.style.width = '100%';
+            chartDiv.style.maxWidth = '100%';
+            
+            if (window.Plotly) {
+                setTimeout(function() {
+                    try {
+                        window.Plotly.newPlot(chartDiv, plotlyData.data, plotlyData.layout, plotlyData.config);
+                    } catch (err) {
+                        console.error('Plotly rendering error', err);
+                    }
+                }, 0);
+            } else {
+                chartDiv.textContent = "Plotly library not loaded";
+                console.error("Plotly is not loaded on window");
+            }
+            return chartDiv;
+        };
+        
+        // Insert at the front of display priority
+        if (root.nb.display_priority.indexOf("application/vnd.plotly.v1+json") === -1) {
+            root.nb.display_priority.unshift("application/vnd.plotly.v1+json");
+        }
+    }
+
     var render_notebook = function (ipynb) {
         var notebook = root.notebook = nb.parse(ipynb);
         while ($holder.hasChildNodes()) {
