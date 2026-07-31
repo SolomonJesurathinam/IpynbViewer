@@ -65,6 +65,26 @@ public class StreamlitActivity extends AppCompatActivity {
     public void webViewSettings(){
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setAllowContentAccess(true);
+        webView.getSettings().setDatabaseEnabled(true);
+        webView.getSettings().setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        
+        // Force software rendering to bypass AdrenoVK / Vulkan shader compile errors on specific devices
+        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+        // Configure Cookie Manager to accept cookies & third-party cookies (essential for API authorization)
+        android.webkit.CookieManager cookieManager = android.webkit.CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.setAcceptThirdPartyCookies(webView, true);
+
+        // Remove WebView signature from User-Agent to make it act as a standard mobile Chrome browser
+        String originalUA = webView.getSettings().getUserAgentString();
+        if (originalUA != null) {
+            String cleanUA = originalUA.replace("Version/4.0 ", "").replace("wv", "");
+            webView.getSettings().setUserAgentString(cleanUA);
+        }
+
         webView.setWebViewClient(new WebViewClient(){
             public void onPageFinished(WebView view, String url) {
                 progresssBarDisplay("gone");
@@ -75,13 +95,19 @@ public class StreamlitActivity extends AppCompatActivity {
     public void activityLauncherCode(){
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (uploadMessage == null) return;
+                    android.util.Log.d("STREAMLIT_UPLOAD", "Activity result received. ResultCode: " + result.getResultCode());
+                    if (uploadMessage == null) {
+                        android.util.Log.e("STREAMLIT_UPLOAD", "uploadMessage callback is null!");
+                        return;
+                    }
 
-                    Uri[] results = null;
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        if (result.getData() != null) {
-                            results = new Uri[]{result.getData().getData()};
+                    Uri[] results = WebChromeClient.FileChooserParams.parseResult(result.getResultCode(), result.getData());
+                    if (results != null) {
+                        for (Uri uri : results) {
+                            android.util.Log.d("STREAMLIT_UPLOAD", "Selected URI: " + (uri != null ? uri.toString() : "null"));
                         }
+                    } else {
+                        android.util.Log.w("STREAMLIT_UPLOAD", "parseResult returned null URIs!");
                     }
                     uploadMessage.onReceiveValue(results);
                     uploadMessage = null;
@@ -93,16 +119,27 @@ public class StreamlitActivity extends AppCompatActivity {
             // For Lollipop 5.0+ Devices
             @Override
             public boolean onShowFileChooser(WebView mWebView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams) {
+                android.util.Log.d("STREAMLIT_UPLOAD", "onShowFileChooser triggered");
                 uploadMessage = filePathCallback;
-                openFileChooser();
+                try {
+                    Intent intent = fileChooserParams.createIntent();
+                    android.util.Log.d("STREAMLIT_UPLOAD", "Created chooser intent: " + intent.toString());
+                    activityResultLauncher.launch(intent);
+                } catch (Exception e) {
+                    android.util.Log.e("STREAMLIT_UPLOAD", "Failed to launch intent from WebView params", e);
+                    uploadMessage.onReceiveValue(null);
+                    uploadMessage = null;
+                    return false;
+                }
                 return true;
             }
 
-            private void openFileChooser() {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("*/*");
-                activityResultLauncher.launch(Intent.createChooser(intent, "File Chooser"));
+            @Override
+            public boolean onConsoleMessage(android.webkit.ConsoleMessage consoleMessage) {
+                android.util.Log.d("WEBVIEW_CONSOLE", consoleMessage.message() + " -- From line "
+                        + consoleMessage.lineNumber() + " of "
+                        + consoleMessage.sourceId());
+                return true;
             }
         });
     }

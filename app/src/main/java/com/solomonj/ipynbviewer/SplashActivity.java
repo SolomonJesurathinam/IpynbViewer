@@ -72,15 +72,19 @@ public class SplashActivity extends AppCompatActivity {
             if (fileUri != null) {
                 if (!isFinishing()) {
                     Log.e("TESTINGG",fileUri.getScheme().toString());
-                    if(hasPersistableUriPermission(fileUri)){
+                    try {
                         getContentResolver().takePersistableUriPermission(
                                 fileUri,
-                                Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION
                         );
+                    } catch (SecurityException e) {
+                        // Ignore cases where the URI is not persistable
                     }
                     // Start WebActivity and pass the file URI
                     Intent webIntent = new Intent(this, Webview.class);
+                    webIntent.setData(fileUri);
                     webIntent.putExtra("filePath", fileUri.toString());
+                    webIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     startActivity(webIntent);
                     finish(); // Close the SplashActivity
                 }

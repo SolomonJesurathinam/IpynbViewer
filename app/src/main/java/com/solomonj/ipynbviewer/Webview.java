@@ -273,23 +273,40 @@ public class Webview extends AppCompatActivity {
 
     //extract data
     public void extractDataAndDisplay(){
+        String filePath = getIntent().getStringExtra("filePath");
+        if (filePath == null) {
+            Toast.makeText(this, "Invalid file path", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+        Uri uri = Uri.parse(filePath);
+        final InputStream inputStream;
+        try {
+            inputStream = getContentResolver().openInputStream(uri);
+        } catch (Exception e) {
+            Toast.makeText(this, "Failed to open file", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Uri uri = Uri.parse(getIntent().getStringExtra("filePath"));
                 String fileContent = null;
                 try {
-                    fileContent = readFileContent(uri);
+                    fileContent = readFileContent(inputStream);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
                 String finalFileContent = fileContent;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar.setVisibility(View.GONE);
                         if(finalFileContent != null){
-                            progressBar.setVisibility(View.GONE);
                             openWebview(finalFileContent);
+                        } else {
+                            Toast.makeText(Webview.this, "Failed to read file contents", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -351,8 +368,7 @@ public class Webview extends AppCompatActivity {
     }
 
     //read data before splitting to chunks
-    private String readFileContent(Uri uri) throws IOException {
-        InputStream inputStream = getContentResolver().openInputStream(uri);
+    private String readFileContent(InputStream inputStream) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         StringBuilder stringBuilder = new StringBuilder();
         String line;
